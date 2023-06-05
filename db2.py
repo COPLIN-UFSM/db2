@@ -42,11 +42,13 @@ class DB2Connection(object):
     Classe para conectar-se com um banco de dados DB2.
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename, late_commit=False):
         """
         Cria um objeto para conectar-se a um banco de dados DB2.
 
         :param filename: Nome de um arquivo json com os dados de login para o banco de dados.
+        :param late_commit: Se as modificações no banco de dados devem ser retardadas até o fim da execução da clásula
+            with.
         """
         self.driver = "{IBM Db2 LUW}"
         self.conn_params = {ibm_db.SQL_ATTR_AUTOCOMMIT: ibm_db.SQL_AUTOCOMMIT_OFF}
@@ -55,6 +57,7 @@ class DB2Connection(object):
             self.login_params = json.load(read_file)
 
         self.conn = None
+        self.late_commit = late_commit
 
     def __enter__(self):
         str_connect = 'DRIVER={0};DATABASE={1};HOSTNAME={2};PORT={3};PROTOCOL=TCPIP;UID={4};PWD={5};'.format(
@@ -66,7 +69,7 @@ class DB2Connection(object):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
+        ibm_db.commit(self.conn)
 
     def query(self, sql: str) -> TupleIterator:
         """
@@ -92,8 +95,11 @@ class DB2Connection(object):
             ibm_db.rollback(self.conn)
             print(f'O comando não pode ser executado: {sql}')
         else:
-            ibm_db.commit(self.conn)
-            success = True
+            if not self.late_commit:
+                ibm_db.commit(self.conn)
+                success = True
+            else:
+                success = True
         return success
 
     @staticmethod
