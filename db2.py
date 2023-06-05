@@ -13,15 +13,23 @@ class TupleIterator(object):
     """
 
     def __init__(self, stmt):
+        self.unitialized = True
         self.stmt = stmt
-        self.next_item = ibm_db.fetch_tuple(self.stmt)
+        self.next_item = None
 
     def __iter__(self):
-        self.next_item = ibm_db.fetch_tuple(self.stmt)
+        if self.unitialized:
+            self.unitialized = False
+            self.next_item = ibm_db.fetch_tuple(self.stmt)
+
         return self
 
     def __next__(self):
         if self.next_item is not False:
+            if self.unitialized:
+                self.next_item = ibm_db.fetch_tuple(self.stmt)
+                self.unitialized = False
+
             to_return = self.next_item
             self.next_item = ibm_db.fetch_tuple(self.stmt)
             return to_return
