@@ -15,7 +15,6 @@ Alternativamente, você pode clonar o repositório em sua máquina com o git e i
 ```bash
 git clone https://github.com/COPLIN-UFSM/db2.git
 cd db2
-conda install -c "conda-forge/label/cf202003" ibm_db==3.* --yes
 pip install -e .
 ```
 

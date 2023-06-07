@@ -1,5 +1,3 @@
-__version__ = '1.0'
-
 import copy
 import json
 import re
