@@ -32,6 +32,8 @@ class TupleIterator(object):
 
             to_return = self.next_item
             self.next_item = ibm_db.fetch_tuple(self.stmt)
+            if to_return is False:
+                raise StopIteration
             return to_return
         else:
             raise StopIteration
