@@ -7,7 +7,7 @@ Um módulo de conveniência para acessar bancos de dados do tipo IBM DB2.
 Para instalar o pacote pelo pip, digite o seguinte comando:
 
 ```bash
-pip install git+git://github.com/COPLIN-UFSM/db2.git#db2
+pip install "git+https://github.com/COPLIN-UFSM/db2.git"
 ```
 
 Alternativamente, você pode clonar o repositório em sua máquina com o git e instalar a partir da pasta do repositório:
@@ -63,7 +63,7 @@ a seção [Instalação](#instalação).
 ```bash
 conda create --name db2 python==3.6.* pip setuptools --yes
 conda install -c "conda-forge/label/cf202003" ibm_db==3.* --yes
-consta install --file requirements.txt --yes
+conda install --file requirements.txt --yes
 ```
 
 ## Contato
