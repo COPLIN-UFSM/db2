@@ -118,7 +118,7 @@ class DB2Connection(object):
 
         for row_name, row_value in sqlite_row.items():
             column_names += [row_name]
-            if row_value is None:
+            if row_value is None or (not isinstance(row_value, str) and np.isnan(row_value)):
                 row_values += ['NULL']
             elif isinstance(row_value, str):
                 new_item = row_value.replace("'", "''")
