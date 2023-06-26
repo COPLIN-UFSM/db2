@@ -1,6 +1,7 @@
 import copy
 import json
 import re
+import numpy as np
 
 import ibm_db
 
