@@ -1,6 +1,8 @@
 import copy
 import json
 import re
+import sys
+
 import numpy as np
 
 import ibm_db
@@ -83,18 +85,20 @@ class DB2Connection(object):
         some_iterator = TupleIterator(stmt)
         return some_iterator
 
-    def modify(self, sql: str) -> bool:
+    def modify(self, sql: str, suppress=False) -> bool:
         """
         Realiza modificações (inserções, modificações, deleções) na base de dados.
 
         :param sql: O comando em SQL.
+        :param supress: Opcional - se warnings devem ser suprimidos na saída do console.
         """
         success = False
         try:
             stmt = ibm_db.exec_immediate(self.conn, sql)
         except Exception as e:
             ibm_db.rollback(self.conn)
-            print(f'O comando não pode ser executado: {sql}')
+            if not suppress:
+                print(f'O comando não pode ser executado: {sql}', file=sys.stderr)
         else:
             if not self.late_commit:
                 ibm_db.commit(self.conn)
