@@ -90,7 +90,7 @@ class DB2Connection(object):
         Realiza modificações (inserções, modificações, deleções) na base de dados.
 
         :param sql: O comando em SQL.
-        :param supress: Opcional - se warnings devem ser suprimidos na saída do console.
+        :param suppress: Opcional - se warnings devem ser suprimidos na saída do console.
         """
         success = False
         try:
@@ -108,13 +108,14 @@ class DB2Connection(object):
         return success
 
     @staticmethod
-    def __collect__(sqlite_row: dict):
+    def __collect__(sqlite_row: dict, *, upper=False):
         """
         Converte um dicionário em duas listas, fazendo adaptações para que a segunda lista (que contém os valores de uma
         tupla em um banco de dados) possa ser prontamente incorporada a uma string SQL.
 
         :param sqlite_row: Um dicionário onde as chaves são nomes de colunas e seus valores os valores de uma tupla em
             um banco de dados.
+        :oaram upper: Opcional - se, para colunas que são string, uma chamada à função UPPER deve ser adicionada
         :return: Duas listas, onde a primeira é a lista de nomes de colunas, e a segunda os valores destas colunas para
             uma tupla.
         """
@@ -122,12 +123,18 @@ class DB2Connection(object):
         column_names = []
 
         for row_name, row_value in sqlite_row.items():
-            column_names += [row_name]
+            if upper:
+                column_names += [f'UPPER({row_name})']
+            else:
+                column_names += [row_name]
             if row_value is None or (not isinstance(row_value, str) and np.isnan(row_value)):
                 row_values += ['NULL']
             elif isinstance(row_value, str):
                 new_item = row_value.replace("'", "''")
-                row_values += [f"'{new_item}'"]
+                if upper:
+                    row_values += [f"UPPER('{new_item}')"]
+                else:
+                    row_values += [f"'{new_item}'"]
             else:
                 row_values += [str(row_value)]
 
