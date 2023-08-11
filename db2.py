@@ -2,6 +2,7 @@ import copy
 import json
 import re
 import sys
+from typing import Union
 
 import numpy as np
 
@@ -12,32 +13,37 @@ class TupleIterator(object):
     """
     Classe para iterar sobre as respostas de um banco de dados DB2.
     """
+    fetch_method = ibm_db.fetch_tuple
 
     def __init__(self, stmt):
-        self.unitialized = True
+        self.uninitialized = True
         self.stmt = stmt
         self.next_item = None
 
     def __iter__(self):
-        if self.unitialized:
-            self.unitialized = False
-            self.next_item = ibm_db.fetch_tuple(self.stmt)
+        if self.uninitialized:
+            self.uninitialized = False
+            self.next_item = self.fetch_method(self.stmt)
 
         return self
 
     def __next__(self):
         if self.next_item is not False:
-            if self.unitialized:
-                self.next_item = ibm_db.fetch_tuple(self.stmt)
-                self.unitialized = False
+            if self.uninitialized:
+                self.next_item = self.fetch_method(self.stmt)
+                self.uninitialized = False
 
             to_return = self.next_item
-            self.next_item = ibm_db.fetch_tuple(self.stmt)
+            self.next_item = self.fetch_method(self.stmt)
             if to_return is False:
                 raise StopIteration
             return to_return
         else:
             raise StopIteration
+
+
+class DictIterator(TupleIterator):
+    fetch_method = ibm_db.fetch_both
 
 
 class DB2Connection(object):
@@ -74,15 +80,19 @@ class DB2Connection(object):
     def __exit__(self, exc_type, exc_val, exc_tb):
         ibm_db.commit(self.conn)
 
-    def query(self, sql: str) -> TupleIterator:
+    def query(self, sql: str, as_dict: bool = False) -> Union[TupleIterator, DictIterator]:
         """
         Realiza consultas à base de dados DB2.
 
         :param sql: A consulta em SQL.
+        :param as_dict: Opcional - se o resultado deve ser um dicionário, ao invés de uma tupla.
         :return: Um iterator para as tuplas a serem retornadas.
         """
         stmt = ibm_db.exec_immediate(self.conn, sql)
-        some_iterator = TupleIterator(stmt)
+        if as_dict:
+            some_iterator = DictIterator(stmt)
+        else:
+            some_iterator = TupleIterator(stmt)
         return some_iterator
 
     def modify(self, sql: str, suppress=False) -> bool:
