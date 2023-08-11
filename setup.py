@@ -8,5 +8,5 @@ setup(
     author_email='henry.cagnini@ufsm.br',
     py_modules=['db2'],
     install_requires=['ibm_db==3.*'],
-    python_requires='>=3.6.*, < 3.7',
+    python_requires='>=3.6.*, <= 3.7.*',
 )
