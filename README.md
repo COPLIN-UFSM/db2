@@ -61,8 +61,8 @@ Este passo-a-passo refere-se às instruções para **desenvolvimento** do pacote
 a seção [Instalação](#instalação).
 
 ```bash
-conda create --name db2 python==3.6.* pip setuptools --yes
-conda install -c "conda-forge/label/cf202003" ibm_db==3.* --yes
+conda create --name db2 python==3.11.* pip setuptools --yes
+pip install ibm_db
 conda install --file requirements.txt --yes
 ```
 
