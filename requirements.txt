@@ -1,5 +1,4 @@
 pip
 setuptools
-python==3.6.*
-ibm_db==3.*
+ibm_db
 numpy
