@@ -1,8 +1,11 @@
 from setuptools import setup
+import os
 from pathlib import Path
 
 this_directory = Path(__file__).parent
-long_description = (this_directory / "README.md").read_text()
+
+with open(os.path.join(this_directory, 'README.md'), 'r', encoding='utf-8') as read_file:
+    long_description = read_file.read()
 
 setup(
     name='db2',
