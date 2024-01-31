@@ -11,6 +11,7 @@ setup(
     author='Henry Cagnini',
     author_email='henry.cagnini@ufsm.br',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     py_modules=['db2'],
     install_requires=['ibm_db==3.1.4'],
     python_requires='==3.11.*',
