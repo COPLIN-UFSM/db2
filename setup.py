@@ -8,8 +8,8 @@ with open(os.path.join(this_directory, 'README.md'), 'r', encoding='utf-8') as r
     long_description = read_file.read()
 
 setup(
-    name='db2',
-    version='1.2',
+    name='coplin_db2',
+    version='1.3.1',
     url='https://github.com/COPLIN-UFSM/db2',
     author='Henry Cagnini',
     author_email='henry.cagnini@ufsm.br',
@@ -18,5 +18,5 @@ setup(
     long_description=long_description,
     py_modules=['db2'],
     install_requires=['ibm_db==3.1.4'],
-    python_requires='==3.11.*',
+    python_requires='>=3.8,<3.12',
 )

@@ -1,4 +1,6 @@
 pip
 setuptools
+build
 ibm_db
 numpy
+twine
