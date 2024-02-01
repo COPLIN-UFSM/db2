@@ -17,7 +17,7 @@ Arquivo `credentials.json`:
 }
 ```
 
-Arquivo db2_schema.sql:
+Arquivo `db2_schema.sql`:
 
 ```sql
 CREATE TABLE SOME_TABLE(
