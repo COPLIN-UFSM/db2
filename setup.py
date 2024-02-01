@@ -17,6 +17,6 @@ setup(
     long_description_content_type='text/markdown',
     long_description=long_description,
     py_modules=['db2'],
-    install_requires=['ibm_db==3.1.4'],
+    install_requires=['ibm_db==3.1.4', 'numpy'],
     python_requires='>=3.8,<3.12',
 )
