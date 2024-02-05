@@ -111,6 +111,8 @@ a seção [Instalação](#instalação).
       password = <token gerado no link https://pypi.org/manage/account/token/>
    ```
 
+4. Para publicar usando o GitHub Actions, siga [este tutorial](https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/)
+
 </details>
 
 ## Contato
