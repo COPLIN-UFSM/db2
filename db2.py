@@ -80,7 +80,7 @@ class DB2Connection(object):
         '''
         return list(self.query(query_str, as_dict=True))
 
-    def query_to_dataframe(self, sql: str, fetch_first: int = None, locale_region: str = 'pt_BR.UTF-8') -> pd.DataFrame:
+    def query_to_dataframe(self, sql: str) -> pd.DataFrame:
         """
         Realiza uma consulta à base de dados DB2, convertendo automaticamente o resultado em um pandas.DataFrame.
 
@@ -88,15 +88,8 @@ class DB2Connection(object):
         prefira definir o parâmetro fetch_first para um valor (e.g. 500 linhas).
 
         :param sql: A consulta em SQL.
-        :param fetch_first: Opcional - número máximo de linhas a serem retornadas para a consulta (equivalente ao
-            parâmetro FETCH FIRST 500 ROWS do IBM DB2 SQL). O padrão é None (retorna todas as linhas disponíveis).
-        :param locale_region: Opcional - a região definida pelo banco de dados, caso não seja en_US. Útil para converter
-            vírgula em ponto, caso o banco de dados use vírgula ao invés de pontos para números de ponto flutuante.
         :return: um pandas.DataFrame com o resultado da consulta.
         """
-        # import locale
-        # locale.setlocale(locale.LC_ALL, locale_region)
-
         pattern = re.compile('([0-9]+)([,\.]{1})([0-9]+)')
 
         def check(val):
