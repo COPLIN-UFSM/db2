@@ -80,36 +80,36 @@ a seção [Instalação](#instalação).
    conda install --file requirements.txt --yes
    ```
 
-   2. Construa o pacote:
+2. Construa o pacote:
 
-      ```bash
-      python -m build 
-      ```
+   ```bash
+   python -m build 
+   ```
 
-      3. Para publicá-lo no PyPi, use o twine:
+3. Para publicá-lo no PyPi, use o twine:
 
-         ```bash
-         twine upload dist/*
-         ```
+   ```bash
+   twine upload dist/*
+   ```
 
-         **NOTA:** Será preciso definir um arquivo `.pypirc` no seu diretório HOME:
+   **NOTA:** Será preciso definir um arquivo `.pypirc` no seu diretório HOME:
 
-         ```text
-         [distutils]
-         index-servers =
-            pypi
-            pypitest
+   ```text
+   [distutils]
+   index-servers =
+      pypi
+      pypitest
          
-         [pypi]
-            repository =  https://upload.pypi.org/legacy/
-            username = __token__
-            password = <token gerado no link https://pypi.org/manage/account/token/>
+   [pypi]
+      repository =  https://upload.pypi.org/legacy/
+      username = __token__
+      password = <token gerado no link https://pypi.org/manage/account/token/>
          
-         [pypitest]
-            repository = https://test.pypi.org/legacy/
-            username = __token__
-            password = <token gerado no link https://pypi.org/manage/account/token/>
-         ```
+   [pypitest]
+      repository = https://test.pypi.org/legacy/
+      username = __token__
+      password = <token gerado no link https://pypi.org/manage/account/token/>
+   ```
 
 </details>
 

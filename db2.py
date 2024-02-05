@@ -2,48 +2,14 @@ import copy
 import json
 import re
 import sys
+import pandas as pd
 from typing import Union
 
 import numpy as np
 
 import ibm_db
 
-
-class TupleIterator(object):
-    """
-    Classe para iterar sobre as respostas de um banco de dados DB2.
-    """
-    fetch_method = ibm_db.fetch_tuple
-
-    def __init__(self, stmt):
-        self.uninitialized = True
-        self.stmt = stmt
-        self.next_item = None
-
-    def __iter__(self):
-        if self.uninitialized:
-            self.uninitialized = False
-            self.next_item = self.fetch_method(self.stmt)
-
-        return self
-
-    def __next__(self):
-        if self.next_item is not False:
-            if self.uninitialized:
-                self.next_item = self.fetch_method(self.stmt)
-                self.uninitialized = False
-
-            to_return = self.next_item
-            self.next_item = self.fetch_method(self.stmt)
-            if to_return is False:
-                raise StopIteration
-            return to_return
-        else:
-            raise StopIteration
-
-
-class DictIterator(TupleIterator):
-    fetch_method = ibm_db.fetch_assoc
+from utils import TupleIterator, DictIterator
 
 
 class DB2Connection(object):
@@ -94,6 +60,60 @@ class DB2Connection(object):
         else:
             some_iterator = TupleIterator(stmt)
         return some_iterator
+
+    def get_columns(self, table_name: str, schema_name: str = None) -> list:
+        """
+        Retorna um dicionário com o tipo de dados das colunas de uma tabela
+        
+        :param table_name: O nome da coluna, com ou sem o SCHEMA prefixado.
+        :param schema_name: Opcional - o nome do schema do qual a tabela pertence. O padrão é None (schema padrão do
+            banco)
+        :return: Uma lista de dicionários, onde para cada dicionário contém as informações da coluna. O tipo das colunas
+            é o tipo no formato IBM DB2 (e.g. DECIMAL(10, 2), FLOAT, INTEGER, VARCHAR, etc).
+        """
+        query_str = f'''
+            select colno as order, colname as name, typename as type
+            from syscat.columns
+            where tabname = '{table_name}'            
+            {("and tabschema = '" + schema_name + "'") if schema_name is not None else ""}--
+            order by colno;
+        '''
+        return list(self.query(query_str, as_dict=True))
+
+    def query_to_dataframe(self, sql: str, fetch_first: int = None, locale_region: str = 'pt_BR.UTF-8') -> pd.DataFrame:
+        """
+        Realiza uma consulta à base de dados DB2, convertendo automaticamente o resultado em um pandas.DataFrame.
+
+        IMPORTANTE: Se a consulta retornar uma tabela que ocupa muito espaço em disco (ou muitos recursos de rede),
+        prefira definir o parâmetro fetch_first para um valor (e.g. 500 linhas).
+
+        :param sql: A consulta em SQL.
+        :param fetch_first: Opcional - número máximo de linhas a serem retornadas para a consulta (equivalente ao
+            parâmetro FETCH FIRST 500 ROWS do IBM DB2 SQL). O padrão é None (retorna todas as linhas disponíveis).
+        :param locale_region: Opcional - a região definida pelo banco de dados, caso não seja en_US. Útil para converter
+            vírgula em ponto, caso o banco de dados use vírgula ao invés de pontos para números de ponto flutuante.
+        :return: um pandas.DataFrame com o resultado da consulta.
+        """
+        # import locale
+        # locale.setlocale(locale.LC_ALL, locale_region)
+
+        pattern = re.compile('([0-9]+)([,\.]{1})([0-9]+)')
+
+        def check(val):
+            return pattern.match(val)
+
+        def to_float(val):
+            return float(str(val).replace(',', '.'))
+
+        df = pd.DataFrame(self.query(sql, as_dict=True))
+        for column in df.columns:
+            if df[column].dtype == 'object' and df[column].apply(check).all():
+                try:
+                    df[column] = df[column].apply(to_float)
+                except ValueError:  # não conseguiu converter para float; ignora
+                    pass
+
+        return df
 
     def modify(self, sql: str, suppress=False) -> bool:
         """

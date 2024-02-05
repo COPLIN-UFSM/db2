@@ -3,4 +3,5 @@ setuptools
 build
 ibm_db
 numpy
+pandas
 twine
