@@ -21,6 +21,7 @@ jobs:
         activate-environment: db2
         environment-file: environment.yml
     - name: Build a binary wheel and a source tarball
+      shell: bash -el {0}
       run: python -m build
     - name: Store the distribution packages
       uses: actions/upload-artifact@v3
