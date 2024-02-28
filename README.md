@@ -103,11 +103,14 @@ a seção [Instalação](#instalação).
    git add .
    git commit -m "mensagem do commit"
    git tag -a <tag_name> -m "O que mudou desde a última versão?"
-   git push origin main
-   git push --follow-tags
+   git push origin main  # envia o commit para o repositório e o pacote para TestPyPi
+   git push origin <tag_name>  # publica a tag e envia o pacote para o PyPi
    ```
    
    Onde <tag_name> é um número no formato, por exemplo, `v1.4.1`.
+
+   Use apenas os comandos `git tag -a <tag_name>` e `git push origin <tag_name>` quando quiser publicar o pacote no 
+   canal PyPi! 
 
    Um tutorial de publicação com GitHub Actions está disponível 
    [neste link](https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/)
