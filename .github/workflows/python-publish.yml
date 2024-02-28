@@ -2,7 +2,7 @@
 # For more information see: https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/
 
 
-name: Publish Python 🐍 distribution 📦 to PyPI and TestPyPI
+name: Publish Python distribution
 
 on: push
 
@@ -55,7 +55,7 @@ jobs:
 
   github-release:
     name: >-
-      Sign the Python distribution with Sigstore ✍️🐍
+      Sign the distribution ✍️🐍
       and upload them to GitHub Release
     needs:
       - publish-to-pypi
