@@ -1,0 +1,16 @@
+name: db2
+channels:
+  - defaults
+dependencies:
+  - pip
+  - python=3.11.*
+  - twine=4.*
+  - pip
+  - setuptools
+  - build
+  - numpy
+  - pandas
+  - pip:
+      - ibm-db==3.1.4
+      - coplin-db2
+prefix: env/db2

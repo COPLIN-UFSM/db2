@@ -1,9 +1,10 @@
-# COPLIN db2
+# coplin-db2
 
-Um módulo de conveniência para acessar bancos de dados do tipo IBM DB2, desenvolvido pela Coordenadoria de Planejamento
-Informacional da UFSM (COPLIN).
+A biblioteca coplin-db2 é um módulo de conveniência para acessar bancos de dados do tipo IBM DB2, desenvolvido pela 
+Coordenadoria de Planejamento Informacional da UFSM (COPLIN).
 
-Permite definir um arquivo com as credenciais de acesso ao banco de dados, que podem ser utilizadas depois:
+Com esta biblioteca, é possível definir um arquivo com credenciais de acesso ao banco de dados, no formato `json`, que 
+podem ser utilizadas posteriormente:
 
 Arquivo `credentials.json`:
 
@@ -20,14 +21,14 @@ Arquivo `credentials.json`:
 Arquivo `db2_schema.sql`:
 
 ```sql
-CREATE TABLE SOME_TABLE(
+CREATE TABLE USERS_TEST_IBMDB2(
     ID INTEGER NOT NULL PRIMARY KEY,
     NAME VARCHAR(10) NOT NULL,
     AGE INTEGER NOT NULL
 );
 
-INSERT INTO SOME_TABLE(NAME, AGE) VALUES (1, 'HENRY', 32);
-INSERT INTO SOME_TABLE(NAME, AGE) VALUES (2, 'JOHN', 20);
+INSERT INTO USERS_TEST_IBMDB2(ID, NAME, AGE) VALUES (1, 'HENRY', 32);
+INSERT INTO USERS_TEST_IBMDB2(ID, NAME, AGE) VALUES (2, 'JOHN', 20);
 
 ```
 
@@ -44,12 +45,22 @@ with DB2Connection(credentials) as db2_conn:
     db2_conn.create_tables('db2_schema.sql')
     query_str = '''
         SELECT * 
-        FROM SOME_TABLE;
+        FROM USERS_TEST_IBMDB2;
      ''' 
-    row_generator = db2_conn.query(query_str, as_dict=True)
+    df = db2_conn.query_to_dataframe(query_str)
     
-    for row in row_generator:
-        print(row)
+    print(df)
+    
+    # deleta a tabela
+    # db2_conn.modify('''DROP TABLE USERS_TEST_IBMDB2;''', suppress=False)
+```
+
+A saída esperada deve ser:
+
+```bash
+   ID   NAME  AGE
+0   1  HENRY   32
+1   2   JOHN   20
 ```
 
 ## Instalação
@@ -72,21 +83,28 @@ pip install "git+https://github.com/COPLIN-UFSM/db2.git"
 Este passo-a-passo refere-se às instruções para **desenvolvimento** do pacote. Se você deseja apenas usá-lo, siga para
 a seção [Instalação](#instalação).
 
-1. Instale as bibliotecas necessárias:
+1. Instale o [Python Anaconda](https://www.anaconda.com/download) na sua máquina
+2. Crie o ambiente virtual do Anaconda, e instale as bibliotecas necessárias:
 
+   ```bash
+   conda env create -f environment.yml
+   ```
+   
+   Alternativamente, você pode instalá-las usando o pip:
+  
    ```bash
    conda create --name db2 python==3.11.* pip --yes
    pip install coplin-db2
    conda install --file requirements.txt --yes
    ```
 
-2. Construa o pacote:
+3. Construa o pacote:
 
    ```bash
    python -m build 
    ```
 
-3. Para publicá-lo no PyPi, use o twine:
+4. Para publicá-lo no PyPi, use o twine:
 
    ```bash
    twine upload dist/*
@@ -111,14 +129,21 @@ a seção [Instalação](#instalação).
       password = <token gerado no link https://pypi.org/manage/account/token/>
    ```
 
-4. Para publicar usando o GitHub Actions, siga [este tutorial](https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/)
+5. Para publicar usando o GitHub Actions, siga 
+   [este tutorial](https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/)
+
+   Em resumo, uma vez configurado o arquivo `python-publish.yml`, todo commit será enviado para pypi-test, mas apenas 
+   os commits com tag serão enviados para o pypi.
+
+   É possível ver como adicionar uma tag à um commit na
+   [documentação oficial do git](https://git-scm.com/book/en/v2/Git-Basics-Tagging). 
 
 </details>
 
 ## Contato
 
-Módulo desenvolvido originalmente por Henry Cagnini: [henry.cagnini@ufsm.br]()
+Biblioteca desenvolvida originalmente por Henry Cagnini: [henry.cagnini@ufsm.br]()
 
-## Bibliografia
+Caso encontre algum problema no uso, abra um issue no [repositório da biblioteca](https://github.com/COPLIN-UFSM/db2).
 
-* [Documentaçao oficial ibm_db (em inglês)](https://www.ibm.com/docs/en/db2/11.5?topic=db-connecting-database-server)
+Melhorias no código-fonte são bem-vindas!
