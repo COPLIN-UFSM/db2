@@ -102,7 +102,9 @@ a seção [Instalação](#instalação).
    # ...
    git add .
    git commit -m "mensagem do commit"
-   git push origin <tag_name> 
+   git tag -a <tag_name> -m "O que mudou desde a última versão?"
+   git push origin main
+   git push --follow-tags
    ```
    
    Onde <tag_name> é um número no formato, por exemplo, `v1.4.1`.
