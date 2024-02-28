@@ -102,7 +102,7 @@ a seção [Instalação](#instalação).
    # ...
    git add .
    git commit -m "mensagem do commit"
-   git tag -a <tag_name> -m "O que mudou desde a última versão?"
+   git tag -a <tag_name> -m "título da versão"
    git push origin main  # envia o commit para o repositório e o pacote para TestPyPi
    git push origin <tag_name>  # publica a tag e envia o pacote para o PyPi
    ```
