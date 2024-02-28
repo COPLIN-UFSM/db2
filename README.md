@@ -71,12 +71,6 @@ Para instalar o pacote pelo pip, digite o seguinte comando:
 pip install coplin-db2
 ```
 
-Caso tenha problemas em instalar pelo pip, instale pelo GitHub:
-
-```bash
-pip install "git+https://github.com/COPLIN-UFSM/db2.git"
-```
-
 <details>
 <summary><h2>Desenvolvimento</h2></summary>
 
@@ -84,59 +78,37 @@ Este passo-a-passo refere-se às instruções para **desenvolvimento** do pacote
 a seção [Instalação](#instalação).
 
 1. Instale o [Python Anaconda](https://www.anaconda.com/download) na sua máquina
-2. Crie o ambiente virtual do Anaconda, e instale as bibliotecas necessárias:
+2. Crie o ambiente virtual do anaconda e instale as bibliotecas necessárias com o comando
 
    ```bash
    conda env create -f environment.yml
-   ```
-   
-   Alternativamente, você pode instalá-las usando o pip:
-  
-   ```bash
-   conda create --name db2 python==3.11.* pip --yes
-   pip install coplin-db2
-   conda install --file requirements.txt --yes
    ```
 
 3. Construa o pacote:
 
    ```bash
-   python -m build 
+   python -m build
    ```
 
-4. Para publicá-lo no PyPi, use o twine:
+4. Instale-o localmente com 
+
+5. Este repositório já conta com uma GitHub Action para publicar automaticamente no PyPi e TestPyPi. Consulte o arquivo 
+   [python-publish.yml](.github/workflows/python-publish.yml) para detalhes da implementação.
+  
+   Todos os commits serão enviados para o TestPyPi, mas apenas commits com tags serão enviados para o PyPi:
 
    ```bash
-   twine upload dist/*
+   # alguma modificação no código fonte
+   # ...
+   git add .
+   git commit -m "mensagem do commit"
+   git push origin <tag_name> 
    ```
+   
+   Onde <tag_name> é um número no formato, por exemplo, `v1.4.1`.
 
-   **NOTA:** Será preciso definir um arquivo `.pypirc` no seu diretório HOME:
-
-   ```text
-   [distutils]
-   index-servers =
-      pypi
-      pypitest
-         
-   [pypi]
-      repository =  https://upload.pypi.org/legacy/
-      username = __token__
-      password = <token gerado no link https://pypi.org/manage/account/token/>
-         
-   [pypitest]
-      repository = https://test.pypi.org/legacy/
-      username = __token__
-      password = <token gerado no link https://pypi.org/manage/account/token/>
-   ```
-
-5. Para publicar usando o GitHub Actions, siga 
-   [este tutorial](https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/)
-
-   Em resumo, uma vez configurado o arquivo `python-publish.yml`, todo commit será enviado para pypi-test, mas apenas 
-   os commits com tag serão enviados para o pypi.
-
-   É possível ver como adicionar uma tag à um commit na
-   [documentação oficial do git](https://git-scm.com/book/en/v2/Git-Basics-Tagging). 
+   Um tutorial de publicação com GitHub Actions está disponível 
+   [neste link](https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/)
 
 </details>
 
@@ -146,4 +118,4 @@ Biblioteca desenvolvida originalmente por Henry Cagnini: [henry.cagnini@ufsm.br]
 
 Caso encontre algum problema no uso, abra um issue no [repositório da biblioteca](https://github.com/COPLIN-UFSM/db2).
 
-Melhorias no código-fonte são bem-vindas!
+Pull requests são bem-vindos!  
