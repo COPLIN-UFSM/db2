@@ -9,7 +9,7 @@ import numpy as np
 
 import ibm_db
 
-from utils import TupleIterator, DictIterator
+from .utils import TupleIterator, DictIterator
 
 
 class DB2Connection(object):
