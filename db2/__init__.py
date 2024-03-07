@@ -93,7 +93,9 @@ class DB2Connection(object):
         pattern = re.compile('([0-9]+)([,\.]{1})([0-9]+)')
 
         def check(val):
-            return pattern.match(val)
+            if val is not None:
+                return pattern.match(val)
+            return False
 
         def to_float(val):
             return float(str(val).replace(',', '.'))
