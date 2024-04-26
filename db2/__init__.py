@@ -241,6 +241,30 @@ class DB2Connection(object):
         success = self.modify(insert_sql)
         return success
 
+    def update(self, table_name: str, where: dict, values: dict) -> bool:
+        """
+        Atualiza os valores de uma tupla (apresentada como um dicionário) em uma tabela.
+
+        :param table_name: Nome da tabela onde os dados serão atualizados.
+        :param where: Dicionário com a cláusula WHERE. As chaves do dicionário são os nomes das colunas, e seus valores
+            os valores da tupla a ser atualizada.
+        :param values: Valores a serem atualizados na tabela do banco de dados.
+        :return: Um booleano denotando se a operação de atualização foi bem sucedida
+        """
+
+        where_column_names, where_row_values = self.__collect__(where)
+
+        column_names, row_values = self.__collect__(values)
+        insert_str = ', '.join([f'{k} = {v}' for k, v in zip(column_names, row_values)])
+        where_str = ' AND '.join(f'{k} = {v}' for k, v in zip(where_column_names, where_row_values))
+
+        update_sql = f"""
+        UPDATE {table_name} SET {insert_str} WHERE {where_str} 
+        """
+
+        success = self.modify(update_sql)
+        return success
+
     def generic_update(self, table_name: str, where: dict, sqlite_row: dict) -> bool:
         """
         Atualiza os valores de uma tupla (apresentada como um dicionário) em uma tabela.
