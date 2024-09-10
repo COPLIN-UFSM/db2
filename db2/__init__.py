@@ -1,4 +1,3 @@
-import copy
 import json
 import re
 import sys
@@ -35,7 +34,9 @@ class DB2Connection(object):
         self.late_commit = late_commit
 
     def __enter__(self):
-        str_connect = 'DRIVER={0};DATABASE={1};HOSTNAME={2};PORT={3};PROTOCOL=TCPIP;UID={4};PWD={5};'.format(
+        str_connect = (
+            'DRIVER={0};DATABASE={1};HOSTNAME={2};PORT={3};'
+            'PROTOCOL=TCPIP;UID={4};PWD={5};AUTHENTICATION=SERVER;').format(
             self.driver, self.login_params['database'], self.login_params['host'], self.login_params['port'],
             self.login_params['user'], self.login_params['password']
         )
@@ -195,8 +196,11 @@ class DB2Connection(object):
 
     def insert_or_update_table(self, table_name: str, where: dict, row: dict) -> bool:
         """
-        Dada uma tabela em DB2 e um conjunto de informações (apresentados como um dicionário), insere ou atualiza estas
+        Dada uma tabela em DB2 e um conjunto de informações (apresentados como um dicionário), insere OU atualiza estas
         informações no banco de dados.
+
+        No parâmetro where, deve ser passado as informações que localizam a linha no banco de dados.
+        No parâmetro row, devem ser passadas todas as informações, inclusive as que estão contidas na cláusula where.
 
         :param table_name: Nome da tabela onde os dados serão inseridos ou atualizados.
         :param where: Dicionário com a cláusula WHERE. As chaves do dicionário são os nomes das colunas, e seus valores
@@ -215,13 +219,13 @@ class DB2Connection(object):
             contains = False
 
         if contains:  # atualiza
-            success = self.generic_update(table_name, where, row)
+            success = self.update(table_name, where, row)
         else:  # insere
-            success = self.generic_insert(table_name, row)
+            success = self.insert(table_name, row)
 
         return success
 
-    def generic_insert(self, table_name: str, row: dict) -> bool:
+    def insert(self, table_name: str, row: dict) -> bool:
         """
         Insere uma tupla (apresentada como um dicionário) em uma tabela.
 
@@ -255,38 +259,6 @@ class DB2Connection(object):
         where_column_names, where_row_values = self.__collect__(where)
 
         column_names, row_values = self.__collect__(values)
-        insert_str = ', '.join([f'{k} = {v}' for k, v in zip(column_names, row_values)])
-        where_str = ' AND '.join(f'{k} = {v}' for k, v in zip(where_column_names, where_row_values))
-
-        update_sql = f"""
-        UPDATE {table_name} SET {insert_str} WHERE {where_str} 
-        """
-
-        success = self.modify(update_sql)
-        return success
-
-    def generic_update(self, table_name: str, where: dict, row: dict) -> bool:
-        """
-        Atualiza os valores de uma tupla (apresentada como um dicionário) em uma tabela.
-
-        :param table_name: Nome da tabela onde os dados serão atualizados.
-        :param where: Dicionário com a cláusula WHERE. As chaves do dicionário são os nomes das colunas, e seus valores
-            os valores da tupla a ser atualizada.
-        :param row: Um dicionário onde as chaves são nomes de colunas e seus valores os valores de uma tupla em
-            um banco de dados.
-        :return: Um booleano denotando se a operação de atualização foi bem sucedida
-        """
-
-        local_row = copy.deepcopy(row)
-        where_column_names, where_row_values = self.__collect__(where)
-
-        for k in where.keys():
-            del local_row[k]
-
-        if len(local_row) == 0:  # se sobrou algum dado a ser atualizado
-            return True
-
-        column_names, row_values = self.__collect__(local_row)
         insert_str = ', '.join([f'{k} = {v}' for k, v in zip(column_names, row_values)])
         where_str = ' AND '.join(f'{k} = {v}' for k, v in zip(where_column_names, where_row_values))
 
