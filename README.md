@@ -73,7 +73,7 @@ pip install coplin-db2
 
 ## Desenvolvimento
 
-Para instruções de desenvolvimento do pacote, consulte [este arquivo](DEVELOPMENT.md).
+Para instruções de desenvolvimento do pacote, consulte [este arquivo](https://github.com/COPLIN-UFSM/db2/blob/main/DEVELOPMENT.md).
 
 ## Contato
 
