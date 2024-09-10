@@ -133,12 +133,12 @@ class DB2Connection(object):
         return success
 
     @staticmethod
-    def __collect__(sqlite_row: dict, *, upper=False):
+    def __collect__(row: dict, *, upper=False):
         """
         Converte um dicionário em duas listas, fazendo adaptações para que a segunda lista (que contém os valores de uma
         tupla em um banco de dados) possa ser prontamente incorporada a uma string SQL.
 
-        :param sqlite_row: Um dicionário onde as chaves são nomes de colunas e seus valores os valores de uma tupla em
+        :param row: Um dicionário onde as chaves são nomes de colunas e seus valores os valores de uma tupla em
             um banco de dados.
         :oaram upper: Opcional - se, para colunas que são string, uma chamada à função UPPER deve ser adicionada
         :return: Duas listas, onde a primeira é a lista de nomes de colunas, e a segunda os valores destas colunas para
@@ -147,7 +147,7 @@ class DB2Connection(object):
         row_values = []
         column_names = []
 
-        for row_name, row_value in sqlite_row.items():
+        for row_name, row_value in row.items():
             if upper:
                 column_names += [f'UPPER({row_name})']
             else:
@@ -193,7 +193,7 @@ class DB2Connection(object):
                     if not tables_created:
                         raise Exception('Não foi possível criar as tabelas no banco de dados!')
 
-    def insert_or_update_table(self, table_name: str, where: dict, sqlite_row: dict) -> bool:
+    def insert_or_update_table(self, table_name: str, where: dict, row: dict) -> bool:
         """
         Dada uma tabela em DB2 e um conjunto de informações (apresentados como um dicionário), insere ou atualiza estas
         informações no banco de dados.
@@ -201,7 +201,7 @@ class DB2Connection(object):
         :param table_name: Nome da tabela onde os dados serão inseridos ou atualizados.
         :param where: Dicionário com a cláusula WHERE. As chaves do dicionário são os nomes das colunas, e seus valores
             os valores da tupla a ser buscada.
-        :param sqlite_row: Um dicionário onde as chaves são nomes de colunas e seus valores os valores de uma tupla em
+        :param row: Um dicionário onde as chaves são nomes de colunas e seus valores os valores de uma tupla em
             um banco de dados.
         :return: Um booleano denotando se a operação de inserção/atualização foi bem sucedida.
         """
@@ -215,23 +215,23 @@ class DB2Connection(object):
             contains = False
 
         if contains:  # atualiza
-            success = self.generic_update(table_name, where, sqlite_row)
+            success = self.generic_update(table_name, where, row)
         else:  # insere
-            success = self.generic_insert(table_name, sqlite_row)
+            success = self.generic_insert(table_name, row)
 
         return success
 
-    def generic_insert(self, table_name: str, sqlite_row: dict) -> bool:
+    def generic_insert(self, table_name: str, row: dict) -> bool:
         """
         Insere uma tupla (apresentada como um dicionário) em uma tabela.
 
         :param table_name: Nome da tabela onde os dados serão inseridos.
-        :param sqlite_row: Um dicionário onde as chaves são nomes de colunas e seus valores os valores de uma tupla em
+        :param row: Um dicionário onde as chaves são nomes de colunas e seus valores os valores de uma tupla em
             um banco de dados.
         :return: Um booleano denotando se a operação de inserção foi bem sucedida.
         """
 
-        column_names, row_values = self.__collect__(sqlite_row)
+        column_names, row_values = self.__collect__(row)
 
         column_names_str = ', '.join(column_names)
         row_str = ', '.join(row_values)
@@ -265,19 +265,19 @@ class DB2Connection(object):
         success = self.modify(update_sql)
         return success
 
-    def generic_update(self, table_name: str, where: dict, sqlite_row: dict) -> bool:
+    def generic_update(self, table_name: str, where: dict, row: dict) -> bool:
         """
         Atualiza os valores de uma tupla (apresentada como um dicionário) em uma tabela.
 
         :param table_name: Nome da tabela onde os dados serão atualizados.
         :param where: Dicionário com a cláusula WHERE. As chaves do dicionário são os nomes das colunas, e seus valores
             os valores da tupla a ser atualizada.
-        :param sqlite_row: Um dicionário onde as chaves são nomes de colunas e seus valores os valores de uma tupla em
+        :param row: Um dicionário onde as chaves são nomes de colunas e seus valores os valores de uma tupla em
             um banco de dados.
         :return: Um booleano denotando se a operação de atualização foi bem sucedida
         """
 
-        local_row = copy.deepcopy(sqlite_row)
+        local_row = copy.deepcopy(row)
         where_column_names, where_row_values = self.__collect__(where)
 
         for k in where.keys():
