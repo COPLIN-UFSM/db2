@@ -16,12 +16,12 @@ class DB2Connection(object):
     Classe para conectar-se com um banco de dados DB2.
     """
 
-    def __init__(self, filename, late_commit=False):
+    def __init__(self, filename: str, late_commit=False):
         """
         Cria um objeto para conectar-se a um banco de dados DB2.
 
         :param filename: Nome de um arquivo json com os dados de login para o banco de dados.
-        :param late_commit: Se as modificações no banco de dados devem ser retardadas até o fim da execução da clásula
+        :param late_commit: Se as modificações no banco de dados devem ser retardadas até o fim da execução da cláusula
             with.
         """
         self.driver = "{IBM Db2 LUW}"
@@ -141,7 +141,7 @@ class DB2Connection(object):
 
         :param row: Um dicionário onde as chaves são nomes de colunas e seus valores os valores de uma tupla em
             um banco de dados.
-        :oaram upper: Opcional - se, para colunas que são string, uma chamada à função UPPER deve ser adicionada
+        :param upper: Opcional - se, para colunas que são string, uma chamada à função UPPER deve ser adicionada
         :return: Duas listas, onde a primeira é a lista de nomes de colunas, e a segunda os valores destas colunas para
             uma tupla.
         """

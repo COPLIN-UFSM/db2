@@ -71,6 +71,10 @@ Para instalar o pacote pelo pip, digite o seguinte comando:
 pip install coplin-db2
 ```
 
+## Documentação
+
+A documentação está disponível em https://coplin-ufsm.github.io/db2
+
 ## Desenvolvimento
 
 Para instruções de desenvolvimento do pacote, consulte [este arquivo](https://github.com/COPLIN-UFSM/db2/blob/main/DEVELOPMENT.md).

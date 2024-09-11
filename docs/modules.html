@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>db2 package &#8212; Documentação coplin-db2 2.1.1</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=c819b4eb"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=daa5921a"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Buscar" href="search.html" />
+    <link rel="next" title="db2.utils package" href="db2.utils.html" />
+    <link rel="prev" title="documentação coplin-db2" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="db2-package">
+<h1>db2 package<a class="headerlink" href="#db2-package" title="Link para este cabeçalho">¶</a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link para este cabeçalho">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="db2.utils.html">db2.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="db2.utils.html#module-db2.utils">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="db2.utils.html#db2.utils.DictIterator"><code class="docutils literal notranslate"><span class="pre">DictIterator</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="db2.utils.html#db2.utils.TupleIterator"><code class="docutils literal notranslate"><span class="pre">TupleIterator</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="module-db2">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-db2" title="Link para este cabeçalho">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="db2.DB2Connection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">db2.</span></span><span class="sig-name descname"><span class="pre">DB2Connection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">late_commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#db2.DB2Connection" title="Link para esta definição">¶</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Classe para conectar-se com um banco de dados DB2.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="db2.DB2Connection.create_tables">
+<span class="sig-name descname"><span class="pre">create_tables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#db2.DB2Connection.create_tables" title="Link para esta definição">¶</a></dt>
+<dd><p>Cria tabelas, se elas não existirem.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> – Caminho para um arquivo SQL com os comandos para criar as tabelas. Cada comando de criação de</p>
+</dd>
+</dl>
+<p>tabelas deve estar separado por dois espaços em branco.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="db2.DB2Connection.get_columns">
+<span class="sig-name descname"><span class="pre">get_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#db2.DB2Connection.get_columns" title="Link para esta definição">¶</a></dt>
+<dd><p>Retorna um dicionário com o tipo de dados das colunas de uma tabela</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table_name</strong> – O nome da coluna, com ou sem o SCHEMA prefixado.</p></li>
+<li><p><strong>schema_name</strong> – Opcional - o nome do schema do qual a tabela pertence. O padrão é None (schema padrão do
+banco)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Uma lista de dicionários, onde para cada dicionário contém as informações da coluna. O tipo das colunas
+é o tipo no formato IBM DB2 (e.g. DECIMAL(10, 2), FLOAT, INTEGER, VARCHAR, etc).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="db2.DB2Connection.insert">
+<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#db2.DB2Connection.insert" title="Link para esta definição">¶</a></dt>
+<dd><p>Insere uma tupla (apresentada como um dicionário) em uma tabela.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table_name</strong> – Nome da tabela onde os dados serão inseridos.</p></li>
+<li><p><strong>row</strong> – Um dicionário onde as chaves são nomes de colunas e seus valores os valores de uma tupla em
+um banco de dados.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Um booleano denotando se a operação de inserção foi bem sucedida.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="db2.DB2Connection.insert_or_update_table">
+<span class="sig-name descname"><span class="pre">insert_or_update_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">where</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#db2.DB2Connection.insert_or_update_table" title="Link para esta definição">¶</a></dt>
+<dd><p>Dada uma tabela em DB2 e um conjunto de informações (apresentados como um dicionário), insere OU atualiza estas
+informações no banco de dados.</p>
+<p>No parâmetro where, deve ser passado as informações que localizam a linha no banco de dados.
+No parâmetro row, devem ser passadas todas as informações, inclusive as que estão contidas na cláusula where.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table_name</strong> – Nome da tabela onde os dados serão inseridos ou atualizados.</p></li>
+<li><p><strong>where</strong> – Dicionário com a cláusula WHERE. As chaves do dicionário são os nomes das colunas, e seus valores
+os valores da tupla a ser buscada.</p></li>
+<li><p><strong>row</strong> – Um dicionário onde as chaves são nomes de colunas e seus valores os valores de uma tupla em
+um banco de dados.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Um booleano denotando se a operação de inserção/atualização foi bem sucedida.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="db2.DB2Connection.modify">
+<span class="sig-name descname"><span class="pre">modify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sql</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suppress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#db2.DB2Connection.modify" title="Link para esta definição">¶</a></dt>
+<dd><p>Realiza modificações (inserções, modificações, deleções) na base de dados.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sql</strong> – O comando em SQL.</p></li>
+<li><p><strong>suppress</strong> – Opcional - se warnings devem ser suprimidos na saída do console.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="db2.DB2Connection.query">
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sql</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="db2.utils.html#db2.utils.TupleIterator" title="db2.utils.TupleIterator"><span class="pre">TupleIterator</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="db2.utils.html#db2.utils.DictIterator" title="db2.utils.DictIterator"><span class="pre">DictIterator</span></a></span></span><a class="headerlink" href="#db2.DB2Connection.query" title="Link para esta definição">¶</a></dt>
+<dd><p>Realiza consultas à base de dados DB2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sql</strong> – A consulta em SQL.</p></li>
+<li><p><strong>as_dict</strong> – Opcional - se o resultado deve ser um dicionário, ao invés de uma tupla.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Um iterator para as tuplas a serem retornadas.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="db2.DB2Connection.query_to_dataframe">
+<span class="sig-name descname"><span class="pre">query_to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sql</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#db2.DB2Connection.query_to_dataframe" title="Link para esta definição">¶</a></dt>
+<dd><p>Realiza uma consulta à base de dados DB2, convertendo automaticamente o resultado em um pandas.DataFrame.</p>
+<p>IMPORTANTE: Se a consulta retornar uma tabela que ocupa muito espaço em disco (ou muitos recursos de rede),
+prefira definir o parâmetro fetch_first para um valor (e.g. 500 linhas).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sql</strong> – A consulta em SQL.</p>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>um pandas.DataFrame com o resultado da consulta.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="db2.DB2Connection.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">where</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#db2.DB2Connection.update" title="Link para esta definição">¶</a></dt>
+<dd><p>Atualiza os valores de uma tupla (apresentada como um dicionário) em uma tabela.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table_name</strong> – Nome da tabela onde os dados serão atualizados.</p></li>
+<li><p><strong>where</strong> – Dicionário com a cláusula WHERE. As chaves do dicionário são os nomes das colunas, e seus valores
+os valores da tupla a ser atualizada.</p></li>
+<li><p><strong>values</strong> – Valores a serem atualizados na tabela do banco de dados.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Um booleano denotando se a operação de atualização foi bem sucedida</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">coplin-db2</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Ir" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navegação</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">db2 package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-db2">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="capítulo anterior">documentação coplin-db2</a></li>
+      <li>Next: <a href="db2.utils.html" title="próximo capítulo">db2.utils package</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Henry Cagnini.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/modules.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
