@@ -111,27 +111,25 @@ class DB2Connection(object):
 
         return df
 
-    def modify(self, sql: str, suppress=False) -> bool:
+    def modify(self, sql: str, suppress=False) -> int:
         """
         Realiza modificações (inserções, modificações, deleções) na base de dados.
 
         :param sql: O comando em SQL.
         :param suppress: Opcional - se warnings devem ser suprimidos na saída do console.
+        :return: Quantidade de linhas que foram afetadas pelo comando SQL
         """
-        success = False
         try:
             stmt = ibm_db.exec_immediate(self.conn, sql)
         except Exception as e:
             ibm_db.rollback(self.conn)
             if not suppress:
                 print(f'O comando não pode ser executado: {sql}', file=sys.stderr)
+            return -1
         else:
             if not self.late_commit:
                 ibm_db.commit(self.conn)
-                success = True
-            else:
-                success = True
-        return success
+            return ibm_db.num_rows(stmt)
 
     @staticmethod
     def __collect__(row: dict, *, upper=False):
@@ -189,9 +187,9 @@ class DB2Connection(object):
 
                 table_already_present = True if next(result)[0] == 1 else False
                 if not table_already_present:
-                    tables_created = self.modify(table_stmt)
+                    linhas = self.modify(table_stmt)
 
-                    if not tables_created:
+                    if linhas == -1:
                         raise Exception('Não foi possível criar as tabelas no banco de dados!')
 
     def insert_or_update_table(self, table_name: str, where: dict, row: dict) -> bool:
@@ -207,7 +205,7 @@ class DB2Connection(object):
             os valores da tupla a ser buscada.
         :param row: Um dicionário onde as chaves são nomes de colunas e seus valores os valores de uma tupla em
             um banco de dados.
-        :return: Um booleano denotando se a operação de inserção/atualização foi bem sucedida.
+        :return: A quantidade de linhas inseridas / atualizadas
         """
         try:
             column_names, row_values = self.__collect__(where)
@@ -219,20 +217,20 @@ class DB2Connection(object):
             contains = False
 
         if contains:  # atualiza
-            success = self.update(table_name, where, row)
+            linhas = self.update(table_name, where, row)
         else:  # insere
-            success = self.insert(table_name, row)
+            linhas = self.insert(table_name, row)
 
-        return success
+        return linhas
 
-    def insert(self, table_name: str, row: dict) -> bool:
+    def insert(self, table_name: str, row: dict) -> int:
         """
         Insere uma tupla (apresentada como um dicionário) em uma tabela.
 
         :param table_name: Nome da tabela onde os dados serão inseridos.
         :param row: Um dicionário onde as chaves são nomes de colunas e seus valores os valores de uma tupla em
             um banco de dados.
-        :return: Um booleano denotando se a operação de inserção foi bem sucedida.
+        :return: A quantidade de linhas inseridas
         """
 
         column_names, row_values = self.__collect__(row)
@@ -242,10 +240,10 @@ class DB2Connection(object):
 
         insert_sql = f"""INSERT INTO {table_name} ({column_names_str}) VALUES ({row_str});"""
 
-        success = self.modify(insert_sql)
-        return success
+        linhas = self.modify(insert_sql)
+        return linhas
 
-    def update(self, table_name: str, where: dict, values: dict) -> bool:
+    def update(self, table_name: str, where: dict, values: dict) -> int:
         """
         Atualiza os valores de uma tupla (apresentada como um dicionário) em uma tabela.
 
@@ -253,7 +251,7 @@ class DB2Connection(object):
         :param where: Dicionário com a cláusula WHERE. As chaves do dicionário são os nomes das colunas, e seus valores
             os valores da tupla a ser atualizada.
         :param values: Valores a serem atualizados na tabela do banco de dados.
-        :return: Um booleano denotando se a operação de atualização foi bem sucedida
+        :return: A quantidade de linhas afetadas pelo comando Update
         """
 
         where_column_names, where_row_values = self.__collect__(where)
@@ -266,5 +264,5 @@ class DB2Connection(object):
         UPDATE {table_name} SET {insert_str} WHERE {where_str} 
         """
 
-        success = self.modify(update_sql)
-        return success
+        linhas = self.modify(update_sql)
+        return linhas
