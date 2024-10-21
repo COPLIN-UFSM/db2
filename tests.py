@@ -5,7 +5,11 @@ Portanto, ele deve executado dentro da rede da UFSM para validação.
 """
 import os
 import unittest
+
+import numpy as np
+
 from db2 import DB2Connection
+from datetime import date
 
 
 class Tester(unittest.TestCase):
@@ -129,15 +133,16 @@ class Tester(unittest.TestCase):
                 CREATE TABLE DB2_TEST_DATAFRAME(
                     A1 INTEGER NOT NULL PRIMARY KEY,
                     A2 DECIMAL(5,2) NOT NULL,
-                    A3 FLOAT NOT NULL
+                    A3 FLOAT NOT NULL,
+                    A4 DATE NOT NULL
                 );
                 ''', suppress=True
             )
-            db2_conn.insert('DB2_TEST_DATAFRAME', {'A1': 1, 'A2': 1.17, 'A3': 3.2})
-            db2_conn.insert('DB2_TEST_DATAFRAME', {'A1': 2, 'A2': 32.500, 'A3': 7.2})
+            db2_conn.insert('DB2_TEST_DATAFRAME', {'A1': 1, 'A2': 1.17, 'A3': 3.2, 'A4': '2024-01-01'})
+            db2_conn.insert('DB2_TEST_DATAFRAME', {'A1': 2, 'A2': 32.500, 'A3': 7.2, 'A4': '2024-01-01'})
 
-            correct_dtypes = [int, float, float]
-            df = db2_conn.query_to_dataframe('''select * from DB2_TEST_DATAFRAME;''')
+            correct_dtypes = [np.dtype('int64'), float, float, np.dtype('O')]
+            df = db2_conn.query_to_dataframe('''SELECT * FROM DB2_TEST_DATAFRAME;''')
             db2_conn.modify('''DROP TABLE DB2_TEST_DATAFRAME;''', suppress=True)
 
             self.assertListEqual(correct_dtypes, df.dtypes.tolist(), 'Os tipos das colunas estão incorretos!')

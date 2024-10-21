@@ -1,8 +1,10 @@
+import datetime
 import json
 import re
 import sys
 import pandas as pd
 from typing import Union
+from datetime import datetime, date
 
 import numpy as np
 
@@ -98,12 +100,17 @@ class DB2Connection(object):
                 return pattern.match(val)
             return False
 
+        def is_date_or_datetime(val):
+            return isinstance(val, date) or isinstance(val, datetime)
+
         def to_float(val):
             return float(str(val).replace(',', '.'))
 
         df = pd.DataFrame(self.query(sql, as_dict=True))
         for column in df.columns:
-            if df[column].dtype == 'object' and df[column].apply(check).all():
+            if df[column].apply(is_date_or_datetime).any():  # coluna é do tipo datetime; apenas passa
+                continue
+            if (df[column].dtype == 'object') and df[column].apply(check).all():
                 try:
                     df[column] = df[column].apply(to_float)
                 except ValueError:  # não conseguiu converter para float; ignora
