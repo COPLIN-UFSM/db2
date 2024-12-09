@@ -9,7 +9,7 @@ with open(os.path.join(this_directory, 'README.md'), 'r', encoding='utf-8') as r
 
 setup(
     name='coplin_db2',
-    version='2.1.2',
+    version='2.1.3',
     url='https://github.com/COPLIN-UFSM/db2',
     author='Henry Cagnini',
     author_email='henry.cagnini@ufsm.br',

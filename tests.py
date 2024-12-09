@@ -134,18 +134,20 @@ class Tester(unittest.TestCase):
                     A1 INTEGER NOT NULL PRIMARY KEY,
                     A2 DECIMAL(5,2) NOT NULL,
                     A3 FLOAT NOT NULL,
-                    A4 DATE NOT NULL
+                    A4 DATE NOT NULL,
+                    A5 VARCHAR(9) NOT NULL
                 );
                 ''', suppress=True
             )
-            db2_conn.insert('DB2_TEST_DATAFRAME', {'A1': 1, 'A2': 1.17, 'A3': 3.2, 'A4': '2024-01-01'})
-            db2_conn.insert('DB2_TEST_DATAFRAME', {'A1': 2, 'A2': 32.500, 'A3': 7.2, 'A4': '2024-01-01'})
+            db2_conn.insert('DB2_TEST_DATAFRAME', {'A1': 1, 'A2': 1.17, 'A3': 3.2, 'A4': '2024-01-01', 'A5': '2010_2020'})
+            db2_conn.insert('DB2_TEST_DATAFRAME', {'A1': 2, 'A2': 32.500, 'A3': 7.2, 'A4': '2050-12-31', 'A5': '2011_2021'})
 
-            correct_dtypes = [np.dtype('int64'), float, float, np.dtype('O')]
             df = db2_conn.query_to_dataframe('''SELECT * FROM DB2_TEST_DATAFRAME;''')
             db2_conn.modify('''DROP TABLE DB2_TEST_DATAFRAME;''', suppress=True)
+            correct_dtypes = [np.dtype('int64'), float, float, np.dtype('O'), np.dtype('O')]
+            inferred_dtypes = df.dtypes.tolist()
 
-            self.assertListEqual(correct_dtypes, df.dtypes.tolist(), 'Os tipos das colunas estão incorretos!')
+            self.assertListEqual(correct_dtypes, inferred_dtypes, 'Os tipos das colunas estão incorretos!')
 
 
 if __name__ == '__main__':

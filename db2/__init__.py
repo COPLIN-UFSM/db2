@@ -93,28 +93,42 @@ class DB2Connection(object):
         :param sql: A consulta em SQL.
         :return: um pandas.DataFrame com o resultado da consulta.
         """
-        pattern = re.compile('([0-9]+)([,\.]{1})([0-9]+)')
-
-        def check(val):
-            if val is not None:
-                return pattern.match(val)
-            return False
-
-        def is_date_or_datetime(val):
-            return isinstance(val, date) or isinstance(val, datetime)
 
         def to_float(val):
             return float(str(val).replace(',', '.'))
 
-        df = pd.DataFrame(self.query(sql, as_dict=True))
+        def do_nothing(val):
+            return val
+
+        converter = {
+            'int': int,
+            'float': to_float,
+            'real': to_float,
+            'decimal': to_float,
+            'string': do_nothing,
+            'date': do_nothing,
+            'datetime': do_nothing,
+        }
+
+        stmt = ibm_db.exec_immediate(self.conn, sql)
+        some_iterator = DictIterator(stmt)
+
+        detected_types = dict()
+        for i in range(ibm_db.num_fields(stmt)):
+            detected_types[ibm_db.field_name(stmt, i)] = ibm_db.field_type(stmt, i)
+
+        df = pd.DataFrame(some_iterator)
+
         for column in df.columns:
-            if df[column].apply(is_date_or_datetime).any():  # coluna é do tipo datetime; apenas passa
-                continue
-            if (df[column].dtype == 'object') and df[column].apply(check).all():
-                try:
-                    df[column] = df[column].apply(to_float)
-                except ValueError:  # não conseguiu converter para float; ignora
-                    pass
+            if detected_types[column] not in converter:
+                raise NotImplementedError(
+                    f'O tipo {detected_types[column]} ainda não é suportado pelo método query_as_dataframe!'
+                )
+
+            try:
+                df[column] = df[column].apply(converter[detected_types[column]])
+            except ValueError:
+                pass
 
         return df
 
