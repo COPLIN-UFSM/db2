@@ -12,7 +12,6 @@ dependencies:
   - pandas
   - pytest
   - sphinx
-  - gcc
   - pip:
-      - ibm-db==3.1.4
+      - ibm_db==3.1.4
       - sphinx-press-theme

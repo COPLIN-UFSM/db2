@@ -1,0 +1,19 @@
+name: db2
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - pip
+  - python=3.11.*
+  - twine=4.*
+  - setuptools
+  - build
+  - numpy
+  - pandas
+  - pytest
+  - sphinx
+  - conda-forge::gcc=12
+  - conda-forge::libstdcxx-ng=12
+  - pip:
+      - ibm_db==3.1.4
+      - sphinx-press-theme

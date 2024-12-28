@@ -7,8 +7,11 @@ a seção [Instalação](#instalação).
 2. Crie o ambiente virtual do anaconda e instale as bibliotecas necessárias com o comando
 
    ```bash
-   conda env create -f environment.yml
+   conda env create -f <environment_file>
    ```
+   
+   Onde `<environment_file>` é o nome do arquivo do seu sistema operacional: `env_windows.yml` ou 
+   `env_linux.yml`
 
 3. Construa o pacote:
 
