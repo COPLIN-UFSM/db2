@@ -12,7 +12,7 @@ dependencies:
   - pandas
   - pytest
   - sphinx
-  - conda-forge::gcc
+  - gcc
   - pip:
       - ibm-db==3.1.4
       - sphinx-press-theme
