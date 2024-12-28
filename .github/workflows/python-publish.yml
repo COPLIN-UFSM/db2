@@ -13,6 +13,8 @@ jobs:
     defaults:
       run:
         shell: bash -el {0}
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
 
     steps:
     - name: Setup - Checkout repository (download code to GitHub workspace)
