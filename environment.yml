@@ -1,6 +1,7 @@
 name: db2
 channels:
   - defaults
+  - conda-forge
 dependencies:
   - pip
   - python=3.11.*
@@ -11,6 +12,7 @@ dependencies:
   - pandas
   - pytest
   - sphinx
+  - conda-forge::gcc
   - pip:
       - ibm-db==3.1.4
       - sphinx-press-theme
