@@ -8,7 +8,7 @@ on: push
 
 jobs:
   build:
-    name: Build distribution ⚙️📦
+    name: Build distribution and update documentation ⚙️📦📄
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -26,13 +26,22 @@ jobs:
         auto-update-conda: true
         activate-environment: db2
         environment-file: environment.yml
-    - name: Documentation - Build Sphinx
+    - name: Build - Build a binary wheel and a source tarball
+      run: python -m build
+    - name: Build - Store the distribution packages
+      uses: actions/upload-artifact@v3
+      with:
+        name: python-package-distributions
+        path: dist/
+    - name: Documentation - install library locally for autodoc
+      run: pip install -e .
+    - name: Documentation - Build documentation with Sphinx
       run: make html
-    - name: Disable Jekyll
+    - name: Documentation - Disable Jekyll
       run: touch docs/.nojekyll
-    - name: Documentation - Setup Pages
+    - name: Documentation - Setup GitHub Pages
       uses: actions/configure-pages@v3
-    - name: Documentation - Upload artifact
+    - name: Documentation - Upload Artifact
       uses: actions/upload-pages-artifact@v1
       with:
         # Upload docs directory content
@@ -42,13 +51,6 @@ jobs:
       uses: actions/deploy-pages@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Build - Build a binary wheel and a source tarball
-      run: python -m build
-    - name: Build - Store the distribution packages
-      uses: actions/upload-artifact@v3
-      with:
-        name: python-package-distributions
-        path: dist/
 
   publish-to-pypi:
     name: >-
