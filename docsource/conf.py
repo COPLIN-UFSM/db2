@@ -6,10 +6,14 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
+# para ler a versão do projeto
+from pathlib import Path
+__VERSION__ = Path('../VERSION').read_text().strip()
+
 project = 'coplin-db2'
 copyright = '2024, Henry Cagnini'
 author = 'Henry Cagnini'
-release = '2.1.4'
+release = __VERSION__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

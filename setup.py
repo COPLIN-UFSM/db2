@@ -1,6 +1,10 @@
 from setuptools import setup
 import os
+
+
+# para ler a versão do projeto
 from pathlib import Path
+__VERSION__ = Path('VERSION').read_text().strip()
 
 this_directory = Path(__file__).parent
 
@@ -9,7 +13,7 @@ with open(os.path.join(this_directory, 'README.md'), 'r', encoding='utf-8') as r
 
 setup(
     name='coplin_db2',
-    version='2.1.4',
+    version=__VERSION__,
     url='https://github.com/COPLIN-UFSM/db2',
     author='Henry Cagnini',
     author_email='henry.cagnini@ufsm.br',

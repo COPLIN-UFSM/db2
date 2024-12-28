@@ -24,9 +24,7 @@ jobs:
         activate-environment: db2
         environment-file: environment.yml
     - name: Documentation - Build Sphinx
-      run: | 
-        make html
-        cp -r docs/html docs
+      run: make html
     - name: Documentation - Setup Pages
       uses: actions/configure-pages@v3
     - name: Documentation - Upload artifact
