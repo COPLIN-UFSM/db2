@@ -25,6 +25,8 @@ jobs:
         environment-file: environment.yml
     - name: Documentation - Build Sphinx
       run: make html
+    - name: Disable Jekyll
+      run: touch docs/.nojekyll
     - name: Documentation - Setup Pages
       uses: actions/configure-pages@v3
     - name: Documentation - Upload artifact
