@@ -9,5 +9,8 @@ dependencies:
   - build
   - numpy
   - pandas
+  - pytest
+  - sphinx
   - pip:
       - ibm-db==3.1.4
+      - sphinx-press-theme

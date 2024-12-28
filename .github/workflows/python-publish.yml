@@ -15,17 +15,33 @@ jobs:
         shell: bash -el {0}
 
     steps:
-    - name: Checkout repository (download code to GitHub workspace)
+    - name: Setup - Checkout repository (download code to GitHub workspace)
       uses: actions/checkout@v4
-    - name: Set up conda environment and install dependencies
+    - name: Setup - Install dependencies with conda
       uses: conda-incubator/setup-miniconda@v3
       with:
         auto-update-conda: true
         activate-environment: db2
         environment-file: environment.yml
-    - name: Build a binary wheel and a source tarball
+    - name: Documentation - Build Sphinx
+      run: | 
+        make html
+        cp -r docs/html docs
+    - name: Documentation - Setup Pages
+      uses: actions/configure-pages@v3
+    - name: Documentation - Upload artifact
+      uses: actions/upload-pages-artifact@v1
+      with:
+        # Upload docs directory content
+        path: 'docs/'
+    - name: Documentation - Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build - Build a binary wheel and a source tarball
       run: python -m build
-    - name: Store the distribution packages
+    - name: Build - Store the distribution packages
       uses: actions/upload-artifact@v3
       with:
         name: python-package-distributions
