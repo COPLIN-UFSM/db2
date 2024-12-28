@@ -1,25 +1,26 @@
 from setuptools import setup
 import os
 
-
-# para ler a versão do projeto
 from pathlib import Path
-__VERSION__ = Path('VERSION').read_text().strip()
-
 this_directory = Path(__file__).parent
+
+about = dict()
+with open(os.path.join(this_directory, 'db2', '__version__.py'), 'r', encoding='utf-8') as read_file:
+    exec(read_file.read(), about)
 
 with open(os.path.join(this_directory, 'README.md'), 'r', encoding='utf-8') as read_file:
     long_description = read_file.read()
 
 setup(
-    name='coplin_db2',
-    version=__VERSION__,
-    url='https://github.com/COPLIN-UFSM/db2',
-    author='Henry Cagnini',
-    author_email='henry.cagnini@ufsm.br',
-    description='Um módulo de conveniência para manipulação de bancos de dados IBM DB2 em Python.',
+    name=about['__title__'],
+    version=about['__version__'],
+    url=about['__url__'],
+    author=about['__author__'],
+    author_email=about['__author_email__'],
+    description=about['__description__'],
     long_description_content_type='text/markdown',
     long_description=long_description,
+    license=about['__license__'],
     packages=['db2', 'db2.utils'],
     py_modules=['db2'],
     install_requires=['ibm_db==3.1.4', 'numpy', 'pandas'],

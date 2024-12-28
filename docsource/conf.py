@@ -7,13 +7,18 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 # para ler a versão do projeto
+import os
 from pathlib import Path
-__VERSION__ = Path('../VERSION').read_text().strip()
+this_directory = Path(__file__).parent
 
-project = 'coplin-db2'
-copyright = '2024, Henry Cagnini'
-author = 'Henry Cagnini'
-release = __VERSION__
+about = dict()
+with open(os.path.join(this_directory, '..', 'db2', '__version__.py'), 'r', encoding='utf-8') as read_file:
+    exec(read_file.read(), about)
+
+project = about['__title__']
+copyright = about['__copyright__']
+author = about['__author__']
+release = about['__version__']
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

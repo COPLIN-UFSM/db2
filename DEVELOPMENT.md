@@ -18,6 +18,10 @@ a seção [Instalação](#instalação).
 
 4. Instale-o localmente com 
 
+   ```
+   pip install -e .
+   ```
+
 5. Este repositório já conta com uma GitHub Action para publicar automaticamente no PyPi e TestPyPi. Consulte o arquivo 
    [python-publish.yml](.github/workflows/python-publish.yml) para detalhes da implementação.
   
@@ -33,7 +37,7 @@ a seção [Instalação](#instalação).
    git push origin <tag_name>  # publica a tag e envia o pacote para o PyPi
    ```
    
-   Onde <tag_name> é um número no formato, por exemplo, `v1.4.1`.
+   Onde `<tag_name>` é um número no formato, por exemplo, `v1.4.1`.
 
    Use apenas os comandos `git tag -a <tag_name>` e `git push origin <tag_name>` quando quiser publicar o pacote no 
    canal PyPi! 
