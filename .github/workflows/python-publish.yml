@@ -15,6 +15,7 @@ jobs:
         shell: bash -el {0}
     permissions:
       id-token: write  # IMPORTANT: mandatory for trusted publishing
+      pages: write  # IMPORTANT: mandatory for deploying to GitHub pages
 
     steps:
     - name: Setup - Checkout repository (download code to GitHub workspace)
