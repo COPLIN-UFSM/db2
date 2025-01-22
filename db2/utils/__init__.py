@@ -5,7 +5,7 @@ class Converter(object):
     @classmethod
     def __get_dictionary_conversions__(cls):
         converter = {
-            'int': int,
+            'int': cls.__to_int__,
             'float': cls.__to_float__,
             'real': cls.__to_float__,
             'decimal': cls.__to_float__,
@@ -26,7 +26,15 @@ class Converter(object):
 
     @staticmethod
     def __to_float__(val):
-        return float(str(val).replace(',', '.'))
+        if val is not None:
+            return float(str(val).replace(',', '.'))
+        return None
+
+    @staticmethod
+    def __to_int__(val):
+        if val is not None:
+            return int(str(val).replace(',', '.'))
+        return None
 
     @staticmethod
     def __do_nothing__(val):
