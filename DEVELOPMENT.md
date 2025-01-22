@@ -13,10 +13,13 @@ a seção [Instalação](#instalação).
    Onde `<environment_file>` é o nome do arquivo do seu sistema operacional: `env_windows.yml` ou 
    `env_linux.yml`
 
-3. Construa o pacote:
+3. Mude a versão em [db2/__version__.py](db2/__version__.py):
 
-   ```bash
-   python -m build
+   ```python
+   # ...
+   # substitua 2.1.7 pelo número desejado
+   __version__ = '2.1.7'
+   # ...
    ```
 
 4. Instale-o localmente com 
@@ -24,8 +27,13 @@ a seção [Instalação](#instalação).
    ```
    pip install -e .
    ```
+5. Teste o pacote executando os testes:
 
-5. Este repositório já conta com uma GitHub Action para publicar automaticamente no PyPi e TestPyPi. Consulte o arquivo 
+   ```bash
+   python db2_test.py
+   ```
+
+6. Este repositório já conta com uma GitHub Action para publicar automaticamente no PyPi e TestPyPi. Consulte o arquivo 
    [python-publish.yml](.github/workflows/python-publish.yml) para detalhes da implementação.
   
    Todos os commits serão enviados para o TestPyPi, mas apenas commits com tags serão enviados para o PyPi:
