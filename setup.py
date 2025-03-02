@@ -23,6 +23,6 @@ setup(
     license=about['__license__'],
     packages=['db2', 'db2.utils'],
     py_modules=['db2'],
-    install_requires=['ibm_db==3.1.4', 'numpy', 'pandas'],
+    install_requires=['ibm_db', 'numpy', 'pandas'],
     python_requires='>=3.8,<3.12'
 )
