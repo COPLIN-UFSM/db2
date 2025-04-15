@@ -42,7 +42,7 @@ jobs:
     - name: Documentation - Setup GitHub Pages
       uses: actions/configure-pages@v3
     - name: Documentation - Upload Artifact
-      uses: actions/upload-pages-artifact@v1
+      uses: actions/upload-pages-artifact@v3
       with:
         # Upload docs directory content
         path: 'docs/'
