@@ -12,6 +12,8 @@ class Converter(object):
             'string': cls.__do_nothing__,
             'date': cls.__do_nothing__,
             'datetime': cls.__do_nothing__,
+            'time': cls.__do_nothing__,
+            'timestamp': cls.__do_nothing__
         }
 
         return converter
@@ -55,10 +57,17 @@ class TupleIterator(object):
     """
     fetch_method = ibm_db.fetch_tuple
 
-    def __init__(self, stmt):
+    def __init__(self, stmt, *, convert_type=True):
+        """
+
+        :param stmt: Consulta a ser iterada sobre
+        :param convert_type: Opcional - use True caso queira que o iterador retorna o dado no tipo armazenado
+        originalmente no banco de dados. O padrão é True
+        """
         self.uninitialized = True
         self.stmt = stmt
         self.next_item = None
+        self.convert_type = convert_type
 
         self.detected_types = Converter.get_types(self.stmt)
 
@@ -88,8 +97,11 @@ class TupleIterator(object):
             else:
                 iterable = zip(self.detected_types.keys(), to_return)
 
-            for k, v in iterable:
-                to_return_new[k] = Converter.get_converter(self.detected_types[k])(v)
+            if self.convert_type:
+                for k, v in iterable:
+                    to_return_new[k] = Converter.get_converter(self.detected_types[k])(v)
+            else:
+                to_return_new = dict(iterable)
 
             self.next_item = self.fetch_method(self.stmt)
 

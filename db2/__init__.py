@@ -162,7 +162,7 @@ class DB2Connection(object):
         """
 
         stmt = ibm_db.exec_immediate(self.conn, sql)
-        some_iterator = DictIterator(stmt)
+        some_iterator = DictIterator(stmt, convert_type=False)
 
         detected_types = Converter.get_types(stmt)
 

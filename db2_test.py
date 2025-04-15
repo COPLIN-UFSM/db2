@@ -3,6 +3,8 @@ Esse arquivo de testes NÃO DEVE SER UTILIZADO para validar o pacote, pois ele f
 
 Portanto, ele deve executado dentro da rede da UFSM para validação.
 """
+import datetime
+
 import numpy as np
 from datetime import datetime as dt
 
@@ -18,18 +20,22 @@ def test_insert(get_database_connection, create_tables):
     Testa o método insert.
     """
     to_input = [
-        {'A1': 1, 'A2': 1.17, 'A3': 3.2, 'A4': '2024-12-31', 'A5': 'olá mundo'},
-        {'A1': 2, 'A2': 32.500, 'A3': 7.2, 'A4': '1970-01-01', 'A5': 'olá henry'}
+        {'A1': 1, 'A2': 1.17, 'A3': 3.2, 'A4': '2024-12-31', 'A5': 'olá mundo', 'A6': '15:30:00', 'A7': '2024-01-01 12:00:00'},
+        {'A1': 2, 'A2': 32.500, 'A3': 7.2, 'A4': '1970-01-01', 'A5': 'olá henry', 'A6': None, 'A7': None}
     ]
     to_retrieve = [
         {
             'A1': 1, 'A2': 1.17, 'A3': 3.2,
             'A4': dt.strptime('2024-12-31', '%Y-%m-%d').date(),
-            'A5': 'olá mundo'
+            'A5': 'olá mundo',
+            'A6': datetime.time(15, 30, 0),
+            'A7': datetime.datetime(2024, 1, 1, 12, 0, 0)
         }, {
             'A1': 2, 'A2': 32.500, 'A3': 7.2,
             'A4': dt.strptime('1970-01-01', '%Y-%m-%d').date(),
-            'A5': 'olá henry'
+            'A5': 'olá henry',
+            'A6': None,
+            'A7': None
         }
     ]
 
@@ -102,16 +108,16 @@ def test_insert_or_update(get_database_connection, create_tables):
 def test_dataframe_query(get_database_connection, create_tables):
     get_database_connection.insert(
         'DB2_TEST_TABLE_1',
-        {'A1': 5, 'A2': 1.17, 'A3': 3.2, 'A4': '2024-01-01', 'A5': '2010_2020'}
+        {'A1': 5, 'A2': 1.17, 'A3': 3.2, 'A4': '2024-01-01', 'A5': '2010_2020', 'A6': '15:30:00', 'A7': '2024-01-01 12:00:00'}
     )
     get_database_connection.insert(
         'DB2_TEST_TABLE_1',
-        {'A1': 6, 'A2': 32.500, 'A3': 7.2, 'A4': '2050-12-31', 'A5': '2011_2021'}
+        {'A1': 6, 'A2': 32.500, 'A3': 7.2, 'A4': '2050-12-31', 'A5': '2011_2021', 'A6': None, 'A7': None}
     )
 
     df = get_database_connection.query_to_dataframe('''SELECT * FROM DB2_TEST_TABLE_1;''')
 
-    expected_dtypes = [np.dtype('int64'), float, float, np.dtype('O'), np.dtype('O')]
+    expected_dtypes = [np.dtype('int64'), float, float, np.dtype('O'), np.dtype('O'), np.dtype('O'), np.dtype('<M8[ns]')]
     queried_dtypes = df.dtypes.tolist()
 
     assert expected_dtypes == queried_dtypes

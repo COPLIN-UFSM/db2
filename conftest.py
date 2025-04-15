@@ -18,7 +18,9 @@ def create_tables(get_database_connection):
             A2 DECIMAL(5,2) NOT NULL,
             A3 DOUBLE NOT NULL,
             A4 DATE NOT NULL,
-            A5 VARCHAR(9) NOT NULL
+            A5 VARCHAR(9) NOT NULL,
+            A6 TIME DEFAULT NULL,
+            A7 TIMESTAMP(6) DEFAULT NULL
         );
         ''', suppress=True
     )
@@ -32,7 +34,9 @@ def get_tables_columns(create_tables):
             {'ORDER': 1, 'NAME': 'A2', 'TYPE': 'DECIMAL'},
             {'ORDER': 2, 'NAME': 'A3', 'TYPE': 'DOUBLE'},
             {'ORDER': 3, 'NAME': 'A4', 'TYPE': 'DATE'},
-            {'ORDER': 4, 'NAME': 'A5', 'TYPE': 'VARCHAR'}
+            {'ORDER': 4, 'NAME': 'A5', 'TYPE': 'VARCHAR'},
+            {'ORDER': 5, 'NAME': 'A6', 'TYPE': 'TIME'},
+            {'ORDER': 6, 'NAME': 'A7', 'TYPE': 'TIMESTAMP'},
         ]
     }
 
