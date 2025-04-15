@@ -48,7 +48,7 @@ jobs:
         path: 'docs/'
     - name: Documentation - Deploy to GitHub Pages
       id: deployment
-      uses: actions/deploy-pages@v1
+      uses: actions/deploy-pages@v4
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
