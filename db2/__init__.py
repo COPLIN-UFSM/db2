@@ -388,12 +388,25 @@ class DB2Connection(object):
         column_names, row_values = self.__collect__(row)
 
         column_names_str = ', '.join(column_names)
-        row_str = ', '.join(row_values)
+        row_str = ', '.join(['?'] * len(column_names))
 
         insert_sql = f"""INSERT INTO {table_name} ({column_names_str}) VALUES ({row_str});"""
 
-        linhas = self.modify(insert_sql)
-        return linhas
+        stmt = ibm_db.prepare(self.conn, insert_sql)
+        for index, (key, value) in enumerate(row.items(), start=1):
+            ibm_db.bind_param(stmt, index, value)
+
+        try:
+            ibm_db.execute(stmt)
+        except Exception as e:
+            ibm_db.rollback(self.conn)
+            if not suppress:
+                print(f'O comando não pode ser executado: {sql}', file=sys.stderr)
+            return 0
+        else:
+            if not self.late_commit:
+                ibm_db.commit(self.conn)
+            return ibm_db.num_rows(stmt);
 
     def update(self, table_name: str, where: dict, values: dict) -> int:
         """
@@ -430,12 +443,27 @@ class DB2Connection(object):
         where_column_names, where_row_values = self.__collect__(where)
 
         column_names, row_values = self.__collect__(values)
-        insert_str = ', '.join([f'{k} = {v}' for k, v in zip(column_names, row_values)])
+        row_values_clause = ['?' for x in range(len(row_values))];
+
+        insert_str = ', '.join([f'{k} = {v}' for k, v in zip(column_names, row_values_clause)])
         where_str = ' AND '.join(f'{k} = {v}' for k, v in zip(where_column_names, where_row_values))
 
         update_sql = f"""
         UPDATE {table_name} SET {insert_str} WHERE {where_str} 
         """
 
-        linhas = self.modify(update_sql)
-        return linhas
+        stmt = ibm_db.prepare(self.conn, update_sql)
+        for index, (key, value) in enumerate(values.items(), start=1):
+            ibm_db.bind_param(stmt, index, value)
+
+        try:
+            ibm_db.execute(stmt)
+        except Exception as e:
+            ibm_db.rollback(self.conn)
+            if not suppress:
+                print(f'O comando não pode ser executado: {sql}', file=sys.stderr)
+            return 0
+        else:
+            if not self.late_commit:
+                ibm_db.commit(self.conn)
+            return ibm_db.num_rows(stmt)
