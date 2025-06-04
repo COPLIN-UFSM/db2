@@ -13,7 +13,8 @@ class Converter(object):
             'date': cls.__do_nothing__,
             'datetime': cls.__do_nothing__,
             'time': cls.__do_nothing__,
-            'timestamp': cls.__do_nothing__
+            'timestamp': cls.__do_nothing__,
+            'clob': cls.__do_nothing__,
         }
 
         return converter
