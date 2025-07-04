@@ -25,6 +25,15 @@ def create_tables(get_database_connection):
         ''', suppress=True
     )
 
+    get_database_connection.modify(
+        '''
+        CREATE TABLE DB2_TEST_TABLE_2 (
+            A8 INTEGER       NOT NULL PRIMARY KEY,
+            A9 CLOB NOT NULL
+        );
+        ''', suppress=True
+    )
+
 
 @pytest.fixture(scope='module')
 def get_tables_columns(create_tables):
@@ -45,3 +54,4 @@ def pytest_sessionfinish(session, exitstatus):
     """ whole test run finishes. """
     with DB2Connection(os.path.join('instance', 'database_credentials.json')) as conn:
         conn.modify('''DROP TABLE DB2_TEST_TABLE_1;''', suppress=True)
+        conn.modify('''DROP TABLE DB2_TEST_TABLE_2;''', suppress=True)

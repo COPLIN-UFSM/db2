@@ -121,3 +121,34 @@ def test_dataframe_query(get_database_connection, create_tables):
     queried_dtypes = df.dtypes.tolist()
 
     assert expected_dtypes == queried_dtypes
+
+def test_clob_column(get_database_connection, create_tables):
+    """
+    Testa a inserção, recuperação e atualização de dados em uma coluna CLOB.
+    """
+    large_text_1 = "a" * 10000  # 10k chars
+    large_text_2 = "b" * 20000  # 20k chars
+
+    # insere linha
+    insert_data = {'A8': 100, 'A9': large_text_1}
+    n_rows_affected = get_database_connection.insert('DB2_TEST_TABLE_2', insert_data)
+    assert n_rows_affected > 0
+
+    # recupera linha e verifica os dados recuperados
+    ret = next(get_database_connection.query(f'''
+        SELECT A8, A9 FROM DB2_TEST_TABLE_2 WHERE A8 = {insert_data['A8']}
+    ''', as_dict=True))
+    assert ret['A8'] == insert_data['A8']
+    assert ret['A9'] == large_text_1
+
+    # atualiza os dados da coluna com um novo texto grande
+    update_data = {'A9': large_text_2}
+    where_clause = {'A8': insert_data['A8']}
+    n_rows_updated = get_database_connection.update('DB2_TEST_TABLE_2', where_clause, update_data)
+    assert n_rows_updated > 0
+
+    # recupera dados e verifica novamente o conteúdo
+    ret_updated = next(get_database_connection.query(f'''
+        SELECT A9 FROM DB2_TEST_TABLE_2 WHERE A8 = {insert_data['A8']}
+    ''', as_dict=True))
+    assert ret_updated['A9'] == large_text_2

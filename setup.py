@@ -12,11 +12,12 @@ with open(os.path.join(this_directory, 'db2', '__version__.py'), 'r', encoding='
 with open(os.path.join(this_directory, 'README.md'), 'r', encoding='utf-8') as read_file:
     long_description = read_file.read()
 
-install_requires = ['numpy', 'pandas']
-if sys.platform.startswith('win') or (os.name == 'nt'):
-    install_requires.append('ibm_db==3.1.4')
-else:
-    install_requires.append('ibm_db')
+install_requires = [
+    'numpy',
+    'pandas',
+    'ibm_db==3.1.4; platform_system == "Windows"',
+    'ibm_db; platform_system != "Windows"'
+]
 
 setup(
     name=about['__title__'],
