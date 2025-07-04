@@ -1,7 +1,8 @@
-from setuptools import setup
 import os
-
+import sys
 from pathlib import Path
+from setuptools import setup
+
 this_directory = Path(__file__).parent
 
 about = dict()
@@ -23,6 +24,8 @@ setup(
     license=about['__license__'],
     packages=['db2', 'db2.utils'],
     py_modules=['db2'],
-    install_requires=['ibm_db', 'numpy', 'pandas'],
+    install_requires=['numpy', 'pandas'] + (
+        ['ibm_db==3.1.4'] if sys.platform.startswith('win') else ['ibm_db']
+    ),
     python_requires='>=3.8,<3.12'
 )
