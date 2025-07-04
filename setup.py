@@ -25,7 +25,7 @@ setup(
     packages=['db2', 'db2.utils'],
     py_modules=['db2'],
     install_requires=['numpy', 'pandas'] + (
-        ['ibm_db==3.1.4'] if sys.platform.startswith('win') else ['ibm_db']
+        ['ibm_db==3.1.4'] if (sys.platform.startswith('win') or (os.name == 'nt')) else ['ibm_db']
     ),
     python_requires='>=3.8,<3.12'
 )
