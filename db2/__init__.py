@@ -360,13 +360,14 @@ class DB2Connection(object):
 
         return linhas
 
-    def insert(self, table_name: str, row: dict) -> int:
+    def insert(self, table_name: str, row: dict, suppress=False) -> int:
         """
         Insere uma tupla (apresentada como um dicionário) em uma tabela.
 
         :param table_name: Nome da tabela onde os dados serão inseridos.
         :param row: Um dicionário onde as chaves são nomes de colunas e seus valores os valores de uma tupla em
             um banco de dados.
+        :param suppress: Opcional - se warnings devem ser suprimidos na saída do console.
         :return: A quantidade de linhas inseridas
 
         **Exemplo:**
@@ -401,14 +402,14 @@ class DB2Connection(object):
         except Exception as e:
             ibm_db.rollback(self.conn)
             if not suppress:
-                print(f'O comando não pode ser executado: {sql}', file=sys.stderr)
+                print(f'O comando não pode ser executado: {insert_sql}', file=sys.stderr)
             return 0
         else:
             if not self.late_commit:
                 ibm_db.commit(self.conn)
             return ibm_db.num_rows(stmt);
 
-    def update(self, table_name: str, where: dict, values: dict) -> int:
+    def update(self, table_name: str, where: dict, values: dict, suppress=False) -> int:
         """
         Atualiza os valores de uma tupla (apresentada como um dicionário) em uma tabela.
 
@@ -416,6 +417,7 @@ class DB2Connection(object):
         :param where: Dicionário com a cláusula WHERE. As chaves do dicionário são os nomes das colunas, e seus valores
             os valores da tupla a ser atualizada.
         :param values: Valores a serem atualizados na tabela do banco de dados.
+        :param suppress: Opcional - se warnings devem ser suprimidos na saída do console.
         :return: A quantidade de linhas afetadas pelo comando update
 
         **Exemplo:**
@@ -461,7 +463,7 @@ class DB2Connection(object):
         except Exception as e:
             ibm_db.rollback(self.conn)
             if not suppress:
-                print(f'O comando não pode ser executado: {sql}', file=sys.stderr)
+                print(f'O comando não pode ser executado: {update_sql}', file=sys.stderr)
             return 0
         else:
             if not self.late_commit:
