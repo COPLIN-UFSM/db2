@@ -40,7 +40,7 @@ def test_insert(get_database_connection, create_tables):
     ]
 
     for inp, out in zip(to_input, to_retrieve):
-        n_rows_affected = get_database_connection.insert('DB2_TEST_TABLE_1', inp)
+        n_rows_affected = get_database_connection.insert('DB2_TEST_TABLE_1', inp, throw=True)
         if n_rows_affected > 0:
             ret = next(get_database_connection.query(f'''
                 SELECT * 
@@ -79,7 +79,7 @@ def test_insert_or_update(get_database_connection, create_tables):
     get_database_connection.insert_or_update_table(
         'DB2_TEST_TABLE_1',
         {'A1': 4, 'A2': 1.17},
-        {'A1': 4, 'A2': 1.17, 'A3': 3.2, 'A4': '2024-12-31', 'A5': 'olá mundo'}
+        {'A1': 4, 'A2': 1.17, 'A3': 3.2, 'A4': '2024-12-31', 'A5': 'olá mundo'}, throw=True
     )
     insert_queried = next(get_database_connection.query('''
         SELECT A3 
@@ -91,7 +91,7 @@ def test_insert_or_update(get_database_connection, create_tables):
     get_database_connection.insert_or_update_table(
         'DB2_TEST_TABLE_1',
         {'A1': 4, 'A2': 1.17},
-        {'A1': 4, 'A2': 1.17, 'A3': 4.0, 'A4': '2024-12-31', 'A5': 'olá mundo'}
+        {'A1': 4, 'A2': 1.17, 'A3': 4.0, 'A4': '2024-12-31', 'A5': 'olá mundo'}, throw=True
     )
     update_queried = next(get_database_connection.query('''
         SELECT A3 
@@ -131,7 +131,7 @@ def test_clob_column(get_database_connection, create_tables):
 
     # insere linha
     insert_data = {'A8': 100, 'A9': large_text_1}
-    n_rows_affected = get_database_connection.insert('DB2_TEST_TABLE_2', insert_data)
+    n_rows_affected = get_database_connection.insert('DB2_TEST_TABLE_2', insert_data, throw=True)
     assert n_rows_affected > 0
 
     # recupera linha e verifica os dados recuperados
@@ -144,7 +144,7 @@ def test_clob_column(get_database_connection, create_tables):
     # atualiza os dados da coluna com um novo texto grande
     update_data = {'A9': large_text_2}
     where_clause = {'A8': insert_data['A8']}
-    n_rows_updated = get_database_connection.update('DB2_TEST_TABLE_2', where_clause, update_data)
+    n_rows_updated = get_database_connection.update('DB2_TEST_TABLE_2', where_clause, update_data, throw=True)
     assert n_rows_updated > 0
 
     # recupera dados e verifica novamente o conteúdo

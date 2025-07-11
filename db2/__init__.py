@@ -10,6 +10,9 @@ import ibm_db
 
 from .utils import TupleIterator, DictIterator, Converter
 
+class IBMDBError(Exception):
+    pass
+
 
 class DB2Connection(object):
     """
@@ -181,7 +184,7 @@ class DB2Connection(object):
 
         return df
 
-    def modify(self, sql: str, suppress=False) -> int:
+    def modify(self, sql: str, suppress=False, throw=False) -> int:
         """
         Realiza modificações (inserções, modificações, deleções) na base de dados.
 
@@ -189,6 +192,7 @@ class DB2Connection(object):
 
         :param sql: O comando em SQL.
         :param suppress: Opcional - se warnings devem ser suprimidos na saída do console.
+        :param throw: Opcional - se, ao ocorrer um erro no comando SQL, uma exceção deve ser lançada
         :return: Quantidade de linhas que foram afetadas pelo comando SQL
 
         **Exemplo:**
@@ -204,8 +208,11 @@ class DB2Connection(object):
             stmt = ibm_db.exec_immediate(self.conn, sql)
         except Exception as e:
             ibm_db.rollback(self.conn)
+            if throw:
+                raise IBMDBError(f'O comando não pôde ser executado: {sql}')
+
             if not suppress:
-                print(f'O comando não pode ser executado: {sql}', file=sys.stderr)
+                print(f'O comando não pôde ser executado: {sql}', file=sys.stderr)
             return 0
         else:
             if not self.late_commit:
@@ -305,9 +312,11 @@ class DB2Connection(object):
                     linhas = self.modify(table_stmt)
 
                     if linhas == 0:
-                        raise Exception('Não foi possível criar as tabelas no banco de dados!')
+                        raise IBMDBError('Não foi possível criar as tabelas no banco de dados!')
 
-    def insert_or_update_table(self, table_name: str, where: dict, row: dict) -> int:
+    def insert_or_update_table(
+        self, table_name: str, where: dict, row: dict, suppress: bool = False, throw: bool = False
+    ) -> int:
         """
         Dada uma tabela em DB2 e um conjunto de informações (apresentados como um dicionário), insere OU atualiza estas
         informações no banco de dados.
@@ -354,13 +363,13 @@ class DB2Connection(object):
             contains = False
 
         if contains:  # atualiza
-            linhas = self.update(table_name, where, row)
+            linhas = self.update(table_name, where, row, suppress=suppress, throw=throw)
         else:  # insere
-            linhas = self.insert(table_name, row)
+            linhas = self.insert(table_name, row, suppress=suppress, throw=throw)
 
         return linhas
 
-    def insert(self, table_name: str, row: dict, suppress=False) -> int:
+    def insert(self, table_name: str, row: dict, suppress=False, throw=False) -> int:
         """
         Insere uma tupla (apresentada como um dicionário) em uma tabela.
 
@@ -368,6 +377,7 @@ class DB2Connection(object):
         :param row: Um dicionário onde as chaves são nomes de colunas e seus valores os valores de uma tupla em
             um banco de dados.
         :param suppress: Opcional - se warnings devem ser suprimidos na saída do console.
+        :param throw: Opcional - se, ao ocorrer um erro no comando SQL, uma exceção deve ser lançada
         :return: A quantidade de linhas inseridas
 
         **Exemplo:**
@@ -393,6 +403,9 @@ class DB2Connection(object):
 
         insert_sql = f"""INSERT INTO {table_name} ({column_names_str}) VALUES ({row_str});"""
 
+        raw_str = ', '.join(row_values)
+        debug_sql = f"""INSERT INTO {table_name} ({column_names_str}) VALUES ({raw_str});"""
+
         stmt = ibm_db.prepare(self.conn, insert_sql)
         for index, (key, value) in enumerate(row.items(), start=1):
             ibm_db.bind_param(stmt, index, value)
@@ -401,15 +414,19 @@ class DB2Connection(object):
             ibm_db.execute(stmt)
         except Exception as e:
             ibm_db.rollback(self.conn)
+
+            if throw:
+                raise IBMDBError(f'O comando não pôde ser executado: {sql}')
+
             if not suppress:
-                print(f'O comando não pode ser executado: {insert_sql}', file=sys.stderr)
+                print(f'O comando não pôde ser executado: {debug_sql}', file=sys.stderr)
             return 0
         else:
             if not self.late_commit:
                 ibm_db.commit(self.conn)
             return ibm_db.num_rows(stmt);
 
-    def update(self, table_name: str, where: dict, values: dict, suppress=False) -> int:
+    def update(self, table_name: str, where: dict, values: dict, suppress=False, throw=False) -> int:
         """
         Atualiza os valores de uma tupla (apresentada como um dicionário) em uma tabela.
 
@@ -418,6 +435,7 @@ class DB2Connection(object):
             os valores da tupla a ser atualizada.
         :param values: Valores a serem atualizados na tabela do banco de dados.
         :param suppress: Opcional - se warnings devem ser suprimidos na saída do console.
+        :param throw: Opcional - se, ao ocorrer um erro no comando SQL, uma exceção deve ser lançada
         :return: A quantidade de linhas afetadas pelo comando update
 
         **Exemplo:**
@@ -445,14 +463,22 @@ class DB2Connection(object):
         where_column_names, where_row_values = self.__collect__(where)
 
         column_names, row_values = self.__collect__(values)
-        row_values_clause = ['?' for x in range(len(row_values))];
+        row_values_clause = ['?' for x in range(len(row_values))]
+        raw_values_clause = ', '.join([f'{k} = {v}' for k, v in zip(column_names, row_values)])
 
         insert_str = ', '.join([f'{k} = {v}' for k, v in zip(column_names, row_values_clause)])
         where_str = ' AND '.join(f'{k} = {v}' for k, v in zip(where_column_names, where_row_values))
 
         update_sql = f"""
         UPDATE {table_name} SET {insert_str} WHERE {where_str} 
-        """
+        """.strip()
+
+        insert_debug = ', '.join([f'{k} = {v}' for k, v in zip(column_names, row_values)])
+        where_debug = ' AND '.join(f'{k} = {v}' for k, v in zip(where_column_names, where_row_values))
+
+        debug_sql = f"""
+            UPDATE {table_name} SET {insert_debug} WHERE {where_debug} 
+        """.strip()
 
         stmt = ibm_db.prepare(self.conn, update_sql)
         for index, (key, value) in enumerate(values.items(), start=1):
@@ -462,8 +488,12 @@ class DB2Connection(object):
             ibm_db.execute(stmt)
         except Exception as e:
             ibm_db.rollback(self.conn)
+
+            if throw:
+                raise IBMDBError(f'O comando não pôde ser executado: {sql}')
+
             if not suppress:
-                print(f'O comando não pode ser executado: {update_sql}', file=sys.stderr)
+                print(f'O comando não pôde ser executado: {debug_sql}', file=sys.stderr)
             return 0
         else:
             if not self.late_commit:

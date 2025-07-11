@@ -1,5 +1,5 @@
 __title__ = 'coplin-db2'
-__version__ = '2.3'
+__version__ = '2.4'
 __url__ = 'https://github.com/COPLIN-UFSM/db2'
 __author__ = 'Henry Cagnini'
 __author_email__ = 'henry.cagnini@ufsm.br'
