@@ -32,8 +32,16 @@ a seção [Instalação](#instalação).
    ```bash
    python db2_test.py
    ```
+   
+6. Para ver a cobertura de código:
 
-6. Este repositório já conta com uma GitHub Action para publicar automaticamente no PyPi e TestPyPi. Consulte o arquivo 
+   ```bash
+   coverage run -m pytest -v
+   coverage report  # para ver na linha de comando
+   coverage html  # para gerar um arquivo html
+   ```
+
+7. Este repositório já conta com uma GitHub Action para publicar automaticamente no PyPi e TestPyPi. Consulte o arquivo 
    [python-publish.yml](.github/workflows/python-publish.yml) para detalhes da implementação.
   
    Todos os commits serão enviados para o TestPyPi, mas apenas commits com tags serão enviados para o PyPi:
