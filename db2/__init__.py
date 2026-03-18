@@ -202,7 +202,7 @@ class DB2Connection(object):
             except ValueError:
                 pass
 
-            if self.__is_string_series__(df[column]) and self.db_encoding != 'utf-8':
+            if self.__is_string_series__(df[column]) and self.db_encoding.lower() != 'utf-8':
                 try:
                     df[column] = df[column].str.encode(self.db_encoding).str.decode('utf-8')
                 except:
