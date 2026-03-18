@@ -24,6 +24,7 @@ class DB2Connection(object):
     :param filename: Nome de um arquivo json com os dados de login para o banco de dados.
     :param late_commit: Se as modificações no banco de dados devem ser retardadas até o fim da execução da cláusula
         with.
+    :param db_encoding: Opcional - o encoding do banco de dados. O padrão é ISO-8859-1.
 
     **Exemplo:**
 
@@ -43,9 +44,10 @@ class DB2Connection(object):
 
     """
 
-    def __init__(self, filename: str, late_commit=False):
+    def __init__(self, filename: str, late_commit=False, db_encoding='ISO-8859-1'):
         self.driver = "{IBM Db2 LUW}"
         self.conn_params = {ibm_db.SQL_ATTR_AUTOCOMMIT: ibm_db.SQL_AUTOCOMMIT_OFF}
+        self.db_encoding = db_encoding
 
         with open(filename, 'r', encoding='utf-8') as read_file:
             self.login_params = json.load(read_file)
@@ -133,6 +135,24 @@ class DB2Connection(object):
         '''
         return list(self.query(query_str, as_dict=True))
 
+    @staticmethod
+    def __is_string_series__(s: pd.Series) -> bool:
+        """
+        Verifica se uma série do pandas é do tipo string.
+        Adaptado de https://stackoverflow.com/a/67001213
+
+        :param s: A série a ser verificada.
+        :return: True se a série é do tipo string, False caso contrário.
+        """
+        if isinstance(s.dtype, pd.StringDtype):
+            # The series was explicitly created as a string series (Pandas>=1.0.0)
+            return True
+        elif s.dtype == 'object':
+            # Object series, check each value
+            return all((v is None) or isinstance(v, str) for v in s)
+        else:
+            return False
+
     def query_to_dataframe(self, sql: str) -> pd.DataFrame:
         """
         Realiza uma consulta à base de dados DB2, convertendo automaticamente o resultado em um pandas.DataFrame.
@@ -181,6 +201,12 @@ class DB2Connection(object):
                 df[column] = df[column].apply(Converter.get_converter(detected_types[column]))
             except ValueError:
                 pass
+
+            if self.__is_string_series__(df[column]):
+                try:
+                    df[column] = df[column].str.encode(self.db_encoding).str.decode('utf-8')
+                except:
+                    pass
 
         return df
 

@@ -8,6 +8,9 @@ import datetime
 import numpy as np
 from datetime import datetime as dt
 
+import pandas as pd
+from pandas import StringDtype
+
 
 def test_columns_name(get_database_connection, get_tables_columns):
     for column_name, actual_columns in get_tables_columns.items():
@@ -117,7 +120,7 @@ def test_dataframe_query(get_database_connection, create_tables):
 
     df = get_database_connection.query_to_dataframe('''SELECT * FROM DB2_TEST_TABLE_1;''')
 
-    expected_dtypes = [np.dtype('int64'), float, float, np.dtype('O'), np.dtype('O'), np.dtype('O'), np.dtype('<M8[ns]')]
+    expected_dtypes = [np.dtype('int64'), float, float, np.dtype('O'), pd.StringDtype(storage='python', na_value=np.nan), np.dtype('O'), np.dtype('datetime64[us]')]
     queried_dtypes = df.dtypes.tolist()
 
     assert expected_dtypes == queried_dtypes
