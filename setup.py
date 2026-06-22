@@ -15,7 +15,7 @@ with open(os.path.join(this_directory, 'README.md'), 'r', encoding='utf-8') as r
 install_requires = [
     'numpy',
     'pandas',
-    'ibm_db==3.1.4; platform_system == "Windows"',
+    'ibm_db==3.2.9; platform_system == "Windows"',
     'ibm_db; platform_system != "Windows"'
 ]
 
@@ -32,6 +32,6 @@ setup(
     packages=find_packages(include=['db2', 'db2.*']),
     py_modules=['db2'],
     install_requires=install_requires,
-    python_requires='>=3.8,<3.12',
+    python_requires='>=3.8,<3.13',
     include_package_data=True
 )
