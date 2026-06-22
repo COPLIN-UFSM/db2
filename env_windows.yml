@@ -4,15 +4,15 @@ channels:
   - conda-forge
 dependencies:
   - pip
-  - python=3.11.*
+  - python=3.12.*
   - twine=4.*
   - setuptools
-  - build
   - numpy
   - pandas
   - pytest
   - sphinx
   - pip:
-      - ibm_db==3.1.4
+      - ibm_db
       - sphinx-press-theme
       - coverage
+      - build
