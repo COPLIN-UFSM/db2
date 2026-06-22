@@ -13,6 +13,6 @@ dependencies:
   - pytest
   - sphinx
   - pip:
-      - ibm_db==3.1.4
+      - ibm_db==3.2.9
       - sphinx-press-theme
       - coverage
