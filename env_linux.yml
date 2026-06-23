@@ -15,6 +15,5 @@ dependencies:
   - conda-forge::libstdcxx-ng=12
   - pip:
       - ibm_db==3.2.9
-      - sphinx-press-theme
       - coverage
       - build
